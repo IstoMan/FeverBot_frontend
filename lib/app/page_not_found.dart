@@ -1,0 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:manifesto/common/resources/app_resources/app_strings.dart';
+
+class PageNotFound extends StatelessWidget {
+  const PageNotFound({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(),
+        body: Center(
+          child: Text(AppStrings.pageNotFound,
+              style: Theme.of(context).textTheme.displayLarge),
+        ));
+  }
+}

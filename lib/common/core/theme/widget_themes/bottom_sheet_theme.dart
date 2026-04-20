@@ -1,0 +1,27 @@
+import 'package:flutter/material.dart';
+import 'package:manifesto/common/resources/app_resources/app_colors.dart';
+import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
+
+class RBottomSheetTheme {
+  RBottomSheetTheme._();
+
+  static BottomSheetThemeData lightBottomSheetTheme = BottomSheetThemeData(
+    showDragHandle: true,
+    backgroundColor: AppColors.black2,
+    dragHandleColor: AppColors.white,
+    modalBackgroundColor: AppColors.black2,
+    constraints: const BoxConstraints(minWidth: double.infinity),
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.v16)),
+  );
+
+  static BottomSheetThemeData darkBottomSheetTheme = BottomSheetThemeData(
+    showDragHandle: true,
+    backgroundColor: AppColors.black6,
+    dragHandleColor: AppColors.white,
+    modalBackgroundColor: AppColors.black6,
+    constraints: const BoxConstraints(minWidth: double.infinity),
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.v16)),
+  );
+}

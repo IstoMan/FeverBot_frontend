@@ -1,0 +1,65 @@
+import 'package:flutter/material.dart';
+import 'package:get/Get.dart';
+import 'package:manifesto/common/resources/app_resources/app_colors.dart';
+import 'package:manifesto/common/resources/app_resources/app_gaps.dart';
+import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
+import 'package:manifesto/common/widgets/shadow_container.dart';
+import 'package:manifesto/features/dashboard/presentation/widgets/common/chat_bubble.dart';
+
+import '../../../../../common/widgets/text_field.dart';
+import '../../controllers/dashboard_controller.dart';
+
+class ChatbotTab extends GetView<DashboardController> {
+  const ChatbotTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSizes.w15,
+      ),
+      child: Column(
+        children: [
+          Obx(
+            () => Expanded(
+              child: ListView.builder(
+                reverse: true,
+                itemCount: controller.state.chatMessages.length,
+                itemBuilder: (context, index) => ChatBubble(
+                  chatMessage: controller.state.chatMessages[
+                      controller.state.chatMessages.length - 1 - index],
+                ),
+              ),
+            ),
+          ),
+          AppGaps.h20,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Expanded(
+                child: RTextField(
+                  hint: 'Type your response',
+                ),
+              ),
+              AppGaps.w10,
+              RShadowContainer(
+                child: Container(
+                  decoration: const BoxDecoration(color: AppColors.primary),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.send,
+                      color: AppColors.white,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          AppGaps.h20,
+        ],
+      ),
+    );
+  }
+}
