@@ -34,13 +34,11 @@ class ChatBubble extends StatelessWidget {
               decoration: BoxDecoration(
                 color: chatMessage.isUser ? AppColors.primary : AppColors.white,
               ),
-              child: Expanded(
-                child: Text(
-                  chatMessage.text,
-                  style: AppTextStyles.geistNormalSemiBold.copyWith(
-                    color:
-                        chatMessage.isUser ? AppColors.white : AppColors.black,
-                  ),
+              child: Text(
+                chatMessage.text,
+                style: AppTextStyles.geistNormalSemiBold.copyWith(
+                  color:
+                      chatMessage.isUser ? AppColors.white : AppColors.black,
                 ),
               ),
             ),

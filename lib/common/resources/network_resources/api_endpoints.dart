@@ -3,10 +3,14 @@ abstract class APIEndpoints {
 
   static String homeDataEndPoint = "/api/sample/home";
 
-  static String loginDataEndPointById(id) => "/api/sample/login/$id";
-  static String signupEndPoint = "/auth/register";
+  static String loginEndPoint = "/auth/login";
+  static String signupEndPoint = "/auth/signup";
 
-  static String onboardingDataEndPointById(id) => "/api/sample/onboarding/$id";
+  static String onboardingEndPoint = "/me/onboarding";
 
-  static String dashboardDataEndPointById(id) => "/api/sample/dashboard/$id";
+  static String dashboardEndPoint = "/me/risk";
+
+  static String newChat = '/chat/new';
+
+  static String sendChat(String id) => '/v1/chats/${id}/messages';
 }

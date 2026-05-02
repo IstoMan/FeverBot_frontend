@@ -1,7 +1,7 @@
-class LoginEntity {
+class SignupEntity {
   final String token;
 
-  LoginEntity({
+  SignupEntity({
     required this.token,
   });
 }

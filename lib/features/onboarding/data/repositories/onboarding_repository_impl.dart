@@ -23,10 +23,7 @@ class OnboardingRepositoryImpl extends OnboardingRepository {
       final OnboardingModel model =
           await remoteDataSource.fetchOnboardingData(request);
 
-      // Optionally cache something locally if needed
-      localDataSource.setAccessToken(model.id);
-
-      return Right(model.toEntity()); // convert to domain entity
+      return Right(model.toEntity());
     } on APIException catch (e) {
       Log.error("API Exception: ${e.message}");
       return Left(APIException(message: e.message, statusCode: e.statusCode));

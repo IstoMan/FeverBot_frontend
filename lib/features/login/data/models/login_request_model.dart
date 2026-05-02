@@ -2,24 +2,35 @@ import 'package:manifesto/features/login/domain/entities/login_request_entity.da
 
 class LoginRequestModel extends LoginRequestEntity {
   LoginRequestModel({
-    required super.id,
+    required super.password,
+    required super.email,
   });
 
-  factory LoginRequestModel.fromEntity(LoginRequestEntity entity) {
+  factory LoginRequestModel.fromJson(Map<String, dynamic> json) {
     return LoginRequestModel(
-      id: entity.id,
+      email: json['email'] as String? ?? '',
+      password: json['password'] as String? ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'email': email,
+      'password': password,
     };
   }
 
   LoginRequestEntity toEntity() {
     return LoginRequestEntity(
-      id: id,
+      email: email,
+      password: password,
+    );
+  }
+
+  factory LoginRequestModel.fromEntity(LoginRequestEntity entity) {
+    return LoginRequestModel(
+      email: entity.email,
+      password: entity.password,
     );
   }
 }

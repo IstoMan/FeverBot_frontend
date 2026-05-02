@@ -4,11 +4,13 @@ import 'package:manifesto/common/widgets/shadow_container.dart';
 class RElevatedButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
+  final bool isLoading;
 
   const RElevatedButton({
     super.key,
     required this.label,
     this.onPressed,
+    this.isLoading = false,
   });
 
   @override

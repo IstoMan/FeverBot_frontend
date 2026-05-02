@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:manifesto/common/core/utils/logger/app_logger.dart';
 
@@ -92,7 +93,7 @@ abstract class RestClient {
 
   Future<dynamic> post(
     String uri, {
-    Map<String, dynamic>? data,
+    dynamic data,
     String? contentType = "application/json",
   });
 

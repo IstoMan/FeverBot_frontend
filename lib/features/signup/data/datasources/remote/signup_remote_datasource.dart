@@ -4,10 +4,13 @@ import 'package:manifesto/common/core/utils/logger/app_logger.dart';
 import 'package:manifesto/common/resources/network_resources/api_endpoints.dart';
 import 'package:manifesto/common/resources/network_resources/rest_client/rest_client.dart';
 import 'package:manifesto/features/signup/data/models/signup_request_model.dart';
+import 'package:manifesto/features/signup/domain/entities/signup_entity.dart';
 import 'package:manifesto/features/signup/domain/entities/signup_request_entity.dart';
 
+import '../../models/signup_model.dart';
+
 abstract class SignupRemoteDataSource {
-  Future<void> fetchSignupData(SignupRequestEntity request);
+  Future<SignupEntity> fetchSignupData(SignupRequestEntity request);
 }
 
 class SignupRemoteDataSourceImpl extends SignupRemoteDataSource {
@@ -16,14 +19,14 @@ class SignupRemoteDataSourceImpl extends SignupRemoteDataSource {
   SignupRemoteDataSourceImpl(this._restClient);
 
   @override
-  Future<void> fetchSignupData(SignupRequestEntity request) async {
+  Future<SignupEntity> fetchSignupData(SignupRequestEntity request) async {
     try {
       final requestModel = SignupRequestModel.fromEntity(request);
       final response = await _restClient.post(
         APIEndpoints.signupEndPoint,
-        data: SignupRequestModel.fromEntity(request).toJson(),
+        data: requestModel.toJson(),
       );
-      return;
+      return SignupModel.fromJson(response);
     } on DioException catch (dioError, stackTrace) {
       Log.warning(
         "DioException while fetching signup data",

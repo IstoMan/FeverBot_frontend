@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:manifesto/common/resources/network_resources/rest_client/rest_client.dart';
 import 'package:manifesto/common/core/utils/errors/exceptions.dart';
 import 'package:manifesto/common/core/utils/logger/app_logger.dart';
 import 'package:manifesto/common/resources/network_resources/api_endpoints.dart';
+import 'package:manifesto/common/resources/network_resources/rest_client/rest_client.dart';
 import 'package:manifesto/features/login/data/models/login_model.dart';
-import 'package:manifesto/features/login/domain/entities/login_request_entity.dart';
 import 'package:manifesto/features/login/data/models/login_request_model.dart';
+import 'package:manifesto/features/login/domain/entities/login_request_entity.dart';
 
 abstract class LoginRemoteDataSource {
   Future<LoginModel> fetchLoginData(LoginRequestEntity request);
@@ -20,8 +20,10 @@ class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
   Future<LoginModel> fetchLoginData(LoginRequestEntity request) async {
     try {
       final requestModel = LoginRequestModel.fromEntity(request);
-      final response = await _restClient
-          .get(APIEndpoints.loginDataEndPointById(requestModel.id));
+      final response = await _restClient.post(
+        APIEndpoints.loginEndPoint,
+        data: requestModel.toJson(),
+      );
       return LoginModel.fromJson(response);
     } on DioException catch (dioError, stackTrace) {
       Log.warning(
@@ -32,7 +34,7 @@ class LoginRemoteDataSourceImpl extends LoginRemoteDataSource {
 
       final statusCode = dioError.response?.statusCode ?? -1;
       final message = dioError.response?.data is Map
-          ? dioError.response?.data["message"]?.toString() ?? dioError.message
+          ? dioError.response?.data["detail"]?.toString() ?? dioError.message
           : dioError.message ?? "Unknown error";
 
       throw APIException(message: message!, statusCode: statusCode);

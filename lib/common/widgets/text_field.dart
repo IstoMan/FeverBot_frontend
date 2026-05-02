@@ -9,12 +9,16 @@ class RTextField extends StatelessWidget {
   final String? label;
   final String hint;
   final IconData? icon;
+  final TextEditingController? controller;
+  final TextInputType? inputType;
 
   const RTextField({
     super.key,
     this.label,
     required this.hint,
     this.icon,
+    this.controller,
+    this.inputType,
   });
 
   @override
@@ -34,6 +38,8 @@ class RTextField extends StatelessWidget {
           enableBorder: true,
           enableShadow: true,
           child: TextFormField(
+            keyboardType: inputType,
+            controller: controller,
             decoration: InputDecoration(
               prefixIcon: icon != null ? Icon(icon) : null,
               hintText: hint,

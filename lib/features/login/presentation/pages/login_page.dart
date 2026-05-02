@@ -48,21 +48,24 @@ class LoginPage extends GetView<LoginController> {
                 ),
               ),
               AppGaps.h20,
-              const RTextField(
+              RTextField(
+                controller: controller.state.emailController,
                 icon: Icons.mail_outline,
                 hint: "name@comapny.com",
                 label: "EMAIL ADDRESS",
               ),
               AppGaps.h20,
-              const RTextField(
+              RTextField(
+                controller: controller.state.passwordController,
                 icon: Icons.lock_outline,
                 hint: "abcd1234",
                 label: "PASSWORD",
               ),
               AppGaps.h30,
-              const SizedBox(
+              SizedBox(
                 width: double.infinity,
                 child: RElevatedButton(
+                  onPressed: controller.fetchLoginData,
                   label: "Login",
                 ),
               ),

@@ -52,7 +52,9 @@ class OnboardingPage extends GetView<OnboardingController> {
                     height: 1.0),
               ),
               AppGaps.h30,
-              const RTextField(
+              RTextField(
+                inputType: TextInputType.number,
+                controller: controller.state.ageController,
                 label: "AGE (YEARS)",
                 hint: "25",
               ),
@@ -102,12 +104,14 @@ class OnboardingPage extends GetView<OnboardingController> {
                 ),
               ),
               AppGaps.h30,
-              const RTextField(
+              RTextField(
+                controller: controller.state.heightController,
                 label: "HEIGHT (CM)",
                 hint: "180",
               ),
               AppGaps.h20,
-              const RTextField(
+              RTextField(
+                controller: controller.state.weightController,
                 label: "WEIGHT (KG)",
                 hint: "75",
               ),

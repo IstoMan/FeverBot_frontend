@@ -79,9 +79,12 @@ class HabitsPage extends GetView<OnboardingController> {
                 ),
               ),
               AppGaps.h30,
-              const SizedBox(
+              SizedBox(
                 width: double.infinity,
-                child: RElevatedButton(label: "Complete Profile"),
+                child: RElevatedButton(
+                  label: "Complete Profile",
+                  onPressed: controller.completeProfile,
+                ),
               ),
               AppGaps.h50
             ],

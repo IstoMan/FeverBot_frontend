@@ -1,13 +1,13 @@
 import 'package:dartz/dartz.dart';
-import 'package:manifesto/features/login/data/datasources/remote/login_remote_datasource.dart';
-import 'package:manifesto/features/login/data/datasources/local/login_local_datasource.dart';
-import 'package:manifesto/features/login/data/models/login_model.dart';
-import 'package:manifesto/features/login/domain/entities/login_entity.dart';
-import 'package:manifesto/features/login/domain/repositories/login_repository.dart';
+import 'package:manifesto/common/core/utils/errors/exceptions.dart';
 import 'package:manifesto/common/core/utils/logger/app_logger.dart';
 import 'package:manifesto/common/core/utils/type_def/type_def.dart';
-import 'package:manifesto/common/core/utils/errors/exceptions.dart';
+import 'package:manifesto/features/login/data/datasources/local/login_local_datasource.dart';
+import 'package:manifesto/features/login/data/datasources/remote/login_remote_datasource.dart';
+import 'package:manifesto/features/login/data/models/login_model.dart';
+import 'package:manifesto/features/login/domain/entities/login_entity.dart';
 import 'package:manifesto/features/login/domain/entities/login_request_entity.dart';
+import 'package:manifesto/features/login/domain/repositories/login_repository.dart';
 
 class LoginRepositoryImpl extends LoginRepository {
   final LoginRemoteDataSource remoteDataSource;
@@ -17,15 +17,13 @@ class LoginRepositoryImpl extends LoginRepository {
       {required this.remoteDataSource, required this.localDataSource});
 
   @override
-  ResultFuture<LoginEntity> getLoginData(
-      {required LoginRequestEntity request}) async {
+  ResultFuture<LoginEntity> login({required LoginRequestEntity request}) async {
     try {
       final LoginModel model = await remoteDataSource.fetchLoginData(request);
 
-      // Optionally cache something locally if needed
-      localDataSource.setAccessToken(model.id);
+      await localDataSource.setAccessToken(model.token);
 
-      return Right(model.toEntity()); // convert to domain entity
+      return Right(model.toEntity());
     } on APIException catch (e) {
       Log.error("API Exception: ${e.message}");
       return Left(APIException(message: e.message, statusCode: e.statusCode));

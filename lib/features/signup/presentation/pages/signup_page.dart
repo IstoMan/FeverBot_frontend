@@ -44,20 +44,23 @@ class SignupPage extends GetView<SignupController> {
                 ),
               ),
               AppGaps.h20,
-              const RTextField(
+              RTextField(
+                controller: controller.state.nameController,
                 label: "FULL NAME",
                 hint: "Keshav Sharma",
                 icon: Icons.person,
               ),
               AppGaps.h20,
-              const RTextField(
+              RTextField(
+                controller: controller.state.emailController,
                 label: "EMAIL ADDRESS",
                 hint: "name@comapny.com",
                 icon: Icons.mail_outline,
               ),
               AppGaps.h20,
-              const RTextField(
-                label: "SECURITY KEY",
+              RTextField(
+                controller: controller.state.passwordController,
+                label: "PASSWORD",
                 hint: "",
                 icon: Icons.lock_outline,
               ),
@@ -65,7 +68,7 @@ class SignupPage extends GetView<SignupController> {
               SizedBox(
                 width: double.infinity,
                 child: RElevatedButton(
-                  onPressed: () => Get.offAllNamed(AppRoutes.onboarding),
+                  onPressed: controller.signup,
                   label: "CONTINUE",
                 ),
               ),

@@ -7,7 +7,14 @@ import 'package:manifesto/common/widgets/shadow_container.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/dashboard/dial_painter.dart';
 
 class DialContainer extends StatelessWidget {
-  const DialContainer({super.key});
+  final double riskScore;
+  final String riskClass;
+
+  const DialContainer({
+    super.key,
+    required this.riskScore,
+    required this.riskClass,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +45,7 @@ class DialContainer extends StatelessWidget {
                     AppSizes.h200,
                   ),
                   painter: DialPainter(
-                    progress: 0.25,
+                    progress: riskScore / 100,
                     trackColor: const Color(0xFFE8E8E8),
                     progressColor: const Color(0xFFF04E23),
                   ),
@@ -47,12 +54,12 @@ class DialContainer extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "28",
+                      riskScore.toString(),
                       style: AppTextStyles.geistLargeMediumLight.copyWith(
                           color: AppColors.black, fontSize: AppSizes.f60),
                     ),
                     Text(
-                      "LOW RISK",
+                      "${riskClass.toUpperCase()} RISK",
                       style: AppTextStyles.geistSmallSemiBold.copyWith(
                           color: const Color(0xFFF04E23), letterSpacing: 1.4),
                     )

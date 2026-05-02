@@ -1,6 +1,9 @@
 class DashboardEntity {
-  final String id;
-  final String name;
+  final double riskScore;
+  final String riskClass;
 
-  DashboardEntity({required this.id, required this.name});
+  DashboardEntity({
+    required this.riskClass,
+    required this.riskScore,
+  });
 }

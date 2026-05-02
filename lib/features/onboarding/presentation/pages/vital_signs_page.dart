@@ -56,28 +56,44 @@ class VitalSignsPage extends GetView<OnboardingController> {
               AppGaps.h30,
               const RVitalSignBanner(),
               AppGaps.h30,
-              const RVitalSignContainer(
+              RVitalSignContainer(
                 icon: Icons.heart_broken,
                 label: 'BLOOD PRESSURE',
                 textFields: [
-                  RTextField(label: "SYSTOLIC (MMHG)", hint: "120"),
-                  RTextField(label: "DIASTOLIC (MMHG)", hint: "80")
+                  RTextField(
+                    label: "SYSTOLIC (MMHG)",
+                    hint: "120",
+                    controller: controller.state.systolicController,
+                  ),
+                  RTextField(
+                    label: "DIASTOLIC (MMHG)",
+                    hint: "80",
+                    controller: controller.state.diastolicController,
+                  ),
                 ],
               ),
               AppGaps.h30,
-              const RVitalSignContainer(
+              RVitalSignContainer(
                 icon: Icons.heart_broken,
                 label: 'CHOLESTEROL LEVEL',
                 textFields: [
-                  RTextField(label: "TOTAL CHOLESTEROL (MG/DL)", hint: "190"),
+                  RTextField(
+                    label: "TOTAL CHOLESTEROL (MG/DL)",
+                    hint: "190",
+                    controller: controller.state.cholesterolController,
+                  ),
                 ],
               ),
               AppGaps.h30,
-              const RVitalSignContainer(
+              RVitalSignContainer(
                 icon: Icons.heart_broken,
                 label: 'GLUCOSE LEVEL',
                 textFields: [
-                  RTextField(label: "FASTING GLUCOSE (MG/DL)", hint: "95"),
+                  RTextField(
+                    label: "FASTING GLUCOSE (MG/DL)",
+                    hint: "95",
+                    controller: controller.state.glucoseController,
+                  ),
                 ],
               ),
               AppGaps.h50,
@@ -85,7 +101,9 @@ class VitalSignsPage extends GetView<OnboardingController> {
                 width: double.infinity,
                 child: RElevatedButton(
                   label: "Continue to Step 3",
-                  onPressed: () => Get.to(() => const HabitsPage()),
+                  onPressed: () => Get.to(
+                    () => const HabitsPage(),
+                  ),
                 ),
               ),
               AppGaps.h50,

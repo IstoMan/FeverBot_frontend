@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/Get.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:manifesto/common/resources/app_resources/app_colors.dart';
 import 'package:manifesto/common/resources/app_resources/app_gaps.dart';
 import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
@@ -20,9 +21,9 @@ class ChatbotTab extends GetView<DashboardController> {
       ),
       child: Column(
         children: [
-          Obx(
-            () => Expanded(
-              child: ListView.builder(
+          Expanded(
+            child: Obx(
+              () => ListView.builder(
                 reverse: true,
                 itemCount: controller.state.chatMessages.length,
                 itemBuilder: (context, index) => ChatBubble(
@@ -32,26 +33,41 @@ class ChatbotTab extends GetView<DashboardController> {
               ),
             ),
           ),
-          AppGaps.h20,
+          AppGaps.h10,
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Expanded(
+              Expanded(
                 child: RTextField(
+                  controller: controller.state.chatController,
                   hint: 'Type your response',
                 ),
               ),
               AppGaps.w10,
               RShadowContainer(
                 child: Container(
+                  width: AppSizes.w40,
+                  height: AppSizes.h40,
                   decoration: const BoxDecoration(color: AppColors.primary),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.send,
-                      color: AppColors.white,
-                    ),
+                  child: Obx(
+                    () => controller.state.chatting.value
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: AppSizes.w10,
+                            ),
+                            child: LoadingAnimationWidget.staggeredDotsWave(
+                              color: AppColors.white,
+                              size: AppSizes.v25,
+                            ),
+                          )
+                        : IconButton(
+                            onPressed: controller.sendChat,
+                            icon: const Icon(
+                              Icons.send,
+                              color: AppColors.white,
+                            ),
+                          ),
                   ),
                 ),
               )
