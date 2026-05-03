@@ -13,6 +13,7 @@ class LoginController extends GetxController {
   LoginController({required this.getLoginUseCase, required this.state});
 
   Future<void> fetchLoginData() async {
+    state.isLoading.value = true;
     final result = await getLoginUseCase.call(
       GetLoginDataUseCaseParams(
         request: LoginRequestEntity(
@@ -30,5 +31,6 @@ class LoginController extends GetxController {
     }, (data) {
       Get.offAllNamed(AppRoutes.dashboard);
     });
+    state.isLoading.value = false;
   }
 }

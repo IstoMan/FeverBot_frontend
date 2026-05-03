@@ -30,9 +30,14 @@ class DialContainer extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const Align(
+            Align(
               alignment: Alignment.topLeft,
-              child: Text("BIOMETRIC RISK ASSESSMENT"),
+              child: Text(
+                "BIOMETRIC RISK ASSESSMENT",
+                style: AppTextStyles.geistNormalBold.copyWith(
+                  color: AppColors.black,
+                ),
+              ),
             ),
             AppGaps.h20,
             SizedBox(
@@ -54,7 +59,7 @@ class DialContainer extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      riskScore.toString(),
+                      riskScore.toStringAsFixed(1),
                       style: AppTextStyles.geistLargeMediumLight.copyWith(
                           color: AppColors.black, fontSize: AppSizes.f60),
                     ),

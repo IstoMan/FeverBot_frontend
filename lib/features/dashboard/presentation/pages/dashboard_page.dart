@@ -5,7 +5,8 @@ import 'package:manifesto/features/dashboard/presentation/controllers/dashboard_
 import 'package:manifesto/features/dashboard/presentation/widgets/common/custom_navigation_bar.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/tabs/chatbot_tab.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/tabs/dashboard_tab.dart';
-import 'package:manifesto/features/dashboard/presentation/widgets/tabs/profile_tab.dart';
+import 'package:manifesto/features/dashboard/presentation/widgets/tabs/document_tab.dart';
+import 'package:manifesto/features/dashboard/presentation/widgets/tabs/family_tab.dart';
 
 class DashboardPage extends GetView<DashboardController> {
   const DashboardPage({super.key});
@@ -15,8 +16,8 @@ class DashboardPage extends GetView<DashboardController> {
     final tabs = [
       const DashboardTab(),
       const ChatbotTab(),
-      const ProfileTab(),
-      const ProfileTab(),
+      const FamilyTab(),
+      const DocumentTab(),
     ];
     return Obx(
       () => Scaffold(
@@ -42,14 +43,14 @@ class DashboardPage extends GetView<DashboardController> {
           ),
           RNavigationButtons(
             onTap: () => controller.state.currentIndex.value = 2,
-            icon: Icons.person,
-            label: "PROFILE",
+            icon: Icons.group,
+            label: "FAMILY",
             isActive: controller.state.currentIndex.value == 2,
           ),
           RNavigationButtons(
             onTap: () => controller.state.currentIndex.value = 3,
-            icon: Icons.person,
-            label: "PROFILE",
+            icon: Icons.document_scanner_outlined,
+            label: "DOCUMENTS",
             isActive: controller.state.currentIndex.value == 3,
           ),
         ]),

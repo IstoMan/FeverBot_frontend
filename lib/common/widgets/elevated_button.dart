@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:manifesto/common/resources/app_resources/app_colors.dart';
+import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
 import 'package:manifesto/common/widgets/shadow_container.dart';
 
 class RElevatedButton extends StatelessWidget {
@@ -29,8 +32,13 @@ class RElevatedButton extends StatelessWidget {
           ),
         ),
         child: ElevatedButton.icon(
-          onPressed: onPressed,
-          label: const Icon(Icons.arrow_forward),
+          onPressed: isLoading ? () {} : onPressed,
+          label: isLoading
+              ? LoadingAnimationWidget.threeArchedCircle(
+                  color: AppColors.white,
+                  size: AppSizes.v20,
+                )
+              : const Icon(Icons.arrow_forward),
           icon: Text(label),
         ),
       ),

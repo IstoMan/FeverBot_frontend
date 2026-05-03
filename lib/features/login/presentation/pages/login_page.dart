@@ -64,9 +64,12 @@ class LoginPage extends GetView<LoginController> {
               AppGaps.h30,
               SizedBox(
                 width: double.infinity,
-                child: RElevatedButton(
-                  onPressed: controller.fetchLoginData,
-                  label: "Login",
+                child: Obx(
+                  () => RElevatedButton(
+                    isLoading: controller.state.isLoading.value,
+                    onPressed: controller.fetchLoginData,
+                    label: "Login",
+                  ),
                 ),
               ),
               AppGaps.h30,

@@ -13,4 +13,16 @@ abstract class APIEndpoints {
   static String newChat = '/chat/new';
 
   static String sendChat(String id) => '/v1/chats/${id}/messages';
+
+  static String getFamily = "/me/family";
+
+  static String inviteFamily = "/me/family/invitations";
+
+  static String getChats = "/chats";
+
+  static String acceptInvite = "/me/family/invitations/accept";
+
+  static String deleteMember(String id) => "/me/family/members/$id";
+
+  static String me = "/me";
 }
