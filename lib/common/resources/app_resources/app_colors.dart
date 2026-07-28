@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
-/// This is an example of commonly use colors class file
+/// FeverBot color tokens
 class AppColors {
   AppColors._();
 
-  static const Color primary = Color(0xFFAF2900); // cyan
-  static const Color primaryDark = Color.fromRGBO(14, 50, 57, 1);
-  static const Color primaryLight = Color.fromRGBO(0, 255, 255, 0.2);
-  static const Color primaryVariant = Color(0xFF00E5CF);
-  static const Color purple = Color.fromRGBO(139, 92, 246, 1);
-  static const Color purplebg = Color.fromRGBO(139, 92, 246, 0.2);
+  static const Color primary = Color(0xFFAF2900);
+  static const Color primaryDark = Color(0xFF7A1C00);
+  static const Color primaryLight = Color(0x33AF2900);
+  static const Color primaryVariant = Color(0xFFF04E23);
   static const Color red = Color.fromRGBO(251, 44, 54, 1);
   static const Color redbg = Color.fromRGBO(251, 44, 54, 0.2);
   static const Color yellow = Color.fromRGBO(240, 177, 0, 1);
@@ -27,7 +25,7 @@ class AppColors {
   static const Color black7 = Color.fromRGBO(12, 12, 12, 1);
   static const Color white = Color.fromRGBO(255, 255, 255, 1);
   static const Color white2 = Color.fromRGBO(163, 163, 163, 1);
-  static const Color cardBackground = Color(0xFF1A1A1A);
+  static const Color cardBackground = Color(0xFFFFFFFF);
   static const Color transparent = Colors.transparent;
   static const Color scaffoldBg = Color(0xFFF9F9F9);
 }

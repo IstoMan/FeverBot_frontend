@@ -17,7 +17,7 @@ class RTextButtonTheme {
       visualDensity: VisualDensity.compact,
       iconSize: AppSizes.h16,
       textStyle:
-          AppTextStyles.interMediumRegular.copyWith(color: AppColors.black),
+          AppTextStyles.geistMediumRegular.copyWith(color: AppColors.black),
     ),
   );
 
@@ -32,7 +32,7 @@ class RTextButtonTheme {
       visualDensity: VisualDensity.compact,
       iconSize: AppSizes.h16,
       textStyle:
-          AppTextStyles.interMediumRegular.copyWith(color: AppColors.white),
+          AppTextStyles.geistMediumRegular.copyWith(color: AppColors.white),
     ),
   );
 }

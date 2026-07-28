@@ -19,36 +19,48 @@ class DashboardPage extends GetView<DashboardController> {
       const FamilyTab(),
       const DocumentTab(),
     ];
-    return Obx(
-      () => Scaffold(
-        appBar: AppBar(
-          title: const Text(AppStrings.appBarText),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(AppStrings.appBarText),
+      ),
+      body: SafeArea(
+        child: Obx(
+          () {
+            final index = controller.state.currentIndex.value;
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 220),
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.easeIn,
+              child: KeyedSubtree(
+                key: ValueKey<int>(index),
+                child: tabs[index],
+              ),
+            );
+          },
         ),
-        body: IndexedStack(
-          index: controller.state.currentIndex.value,
-          children: tabs,
-        ),
-        bottomNavigationBar: RNavigationBar(buttons: [
+      ),
+      bottomNavigationBar: Obx(
+        () => RNavigationBar(buttons: [
           RNavigationButtons(
-            onTap: () => controller.state.currentIndex.value = 0,
+            onTap: () => controller.changeTab(0),
             icon: Icons.home,
             label: "DASHBOARD",
             isActive: controller.state.currentIndex.value == 0,
           ),
           RNavigationButtons(
-            onTap: () => controller.state.currentIndex.value = 1,
+            onTap: () => controller.changeTab(1),
             icon: Icons.chat,
             label: "CHATBOT",
             isActive: controller.state.currentIndex.value == 1,
           ),
           RNavigationButtons(
-            onTap: () => controller.state.currentIndex.value = 2,
+            onTap: () => controller.changeTab(2),
             icon: Icons.group,
             label: "FAMILY",
             isActive: controller.state.currentIndex.value == 2,
           ),
           RNavigationButtons(
-            onTap: () => controller.state.currentIndex.value = 3,
+            onTap: () => controller.changeTab(3),
             icon: Icons.document_scanner_outlined,
             label: "DOCUMENTS",
             isActive: controller.state.currentIndex.value == 3,

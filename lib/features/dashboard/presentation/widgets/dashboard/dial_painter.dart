@@ -17,7 +17,7 @@ class DialPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2;
-    final strokeWidth = 20.0;
+    const strokeWidth = 20.0;
 
     final trackPaint = Paint()
       ..color = trackColor
@@ -31,7 +31,6 @@ class DialPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.butt;
 
-    // full background track
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius - strokeWidth / 2),
       pi * 2,
@@ -40,7 +39,6 @@ class DialPainter extends CustomPainter {
       trackPaint,
     );
 
-    // progress arc
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius - strokeWidth / 2),
       pi * 0.5,
@@ -51,5 +49,9 @@ class DialPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant DialPainter oldDelegate) {
+    return oldDelegate.progress != progress ||
+        oldDelegate.trackColor != trackColor ||
+        oldDelegate.progressColor != progressColor;
+  }
 }

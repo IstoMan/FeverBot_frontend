@@ -16,46 +16,62 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        left: chatMessage.isUser ? AppSizes.w50 : 0,
-        right: chatMessage.isUser ? 0 : AppSizes.w50,
-        top: AppSizes.h30,
-      ),
-      child: Column(
-        children: [
-          RShadowContainer(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSizes.w20,
-                vertical: AppSizes.h10,
-              ),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: chatMessage.isUser ? AppColors.primary : AppColors.white,
-              ),
-              child: Text(
-                chatMessage.text,
-                style: AppTextStyles.geistNormalSemiBold.copyWith(
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 12),
+            child: child,
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(
+          left: chatMessage.isUser ? AppSizes.w50 : 0,
+          right: chatMessage.isUser ? 0 : AppSizes.w50,
+          top: AppSizes.h30,
+        ),
+        child: Column(
+          children: [
+            RShadowContainer(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.w20,
+                  vertical: AppSizes.h10,
+                ),
+                width: double.infinity,
+                decoration: BoxDecoration(
                   color:
-                      chatMessage.isUser ? AppColors.white : AppColors.black,
+                      chatMessage.isUser ? AppColors.primary : AppColors.white,
+                ),
+                child: Text(
+                  chatMessage.text,
+                  style: AppTextStyles.geistNormalSemiBold.copyWith(
+                    color: chatMessage.isUser
+                        ? AppColors.white
+                        : AppColors.black,
+                  ),
                 ),
               ),
             ),
-          ),
-          AppGaps.h8,
-          Align(
-            alignment: chatMessage.isUser
-                ? Alignment.centerRight
-                : Alignment.centerLeft,
-            child: Text(
-              chatMessage.isUser ? "YOU" : "AI ASSISTANT",
-              style: AppTextStyles.geistSmallRegular.copyWith(
-                color: AppColors.black,
+            AppGaps.h8,
+            Align(
+              alignment: chatMessage.isUser
+                  ? Alignment.centerRight
+                  : Alignment.centerLeft,
+              child: Text(
+                chatMessage.isUser ? "YOU" : "FEVERBOT",
+                style: AppTextStyles.geistSmallRegular.copyWith(
+                  color: AppColors.black,
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

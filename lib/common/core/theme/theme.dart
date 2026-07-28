@@ -29,7 +29,7 @@ class AppTheme {
       disabledColor: AppColors.black2,
       brightness: Brightness.light,
       primaryColor: AppColors.primary,
-      secondaryHeaderColor: AppColors.purple,
+      secondaryHeaderColor: AppColors.primary,
       navigationBarTheme:
           RNavigationBarTheme.lightNavigationBarTheme,
       chipTheme: RChipTheme.lightChipTheme,
@@ -63,7 +63,7 @@ class AppTheme {
       brightness: Brightness.dark,
       disabledColor: AppColors.white2,
       primaryColor: AppColors.primary,
-      secondaryHeaderColor: AppColors.purple,
+      secondaryHeaderColor: AppColors.primary,
       chipTheme: RChipTheme.darkChipTheme,
       scaffoldBackgroundColor: AppColors.black,
       textTheme: RTextTheme.darkTextTheme,

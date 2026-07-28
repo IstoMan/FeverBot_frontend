@@ -22,7 +22,8 @@ class OnboardingPage extends GetView<OnboardingController> {
       appBar: AppBar(
         title: const Text(AppStrings.appBarText),
       ),
-      body: SingleChildScrollView(
+      body: SafeArea(
+        child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: AppSizes.w15),
@@ -86,7 +87,7 @@ class OnboardingPage extends GetView<OnboardingController> {
                             controller.state.selectedGender.value = "FEMALE",
                         isSelected:
                             controller.state.selectedGender.value == "FEMALE",
-                        icon: Icons.male,
+                        icon: Icons.female,
                         label: 'FEMALE',
                       ),
                     ),
@@ -96,7 +97,7 @@ class OnboardingPage extends GetView<OnboardingController> {
                             controller.state.selectedGender.value = "OTHERS",
                         isSelected:
                             controller.state.selectedGender.value == "OTHERS",
-                        icon: Icons.male,
+                        icon: Icons.transgender,
                         label: 'OTHERS',
                       ),
                     )
@@ -127,6 +128,7 @@ class OnboardingPage extends GetView<OnboardingController> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

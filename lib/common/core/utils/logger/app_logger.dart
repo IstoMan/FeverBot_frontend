@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
 class Log {
   static final Logger _logger = Logger(
+    level: kReleaseMode ? Level.off : Level.trace,
     printer: PrettyPrinter(
       methodCount: 3,
       lineLength: 160,
@@ -11,6 +13,7 @@ class Log {
 
   static void verbose(dynamic message,
       [dynamic error, StackTrace? stackTrace]) {
+    if (kReleaseMode) return;
     _logger.t(
       message,
       error: error,
@@ -19,6 +22,7 @@ class Log {
   }
 
   static void debug(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+    if (kReleaseMode) return;
     _logger.d(
       message,
       error: error,
@@ -27,6 +31,7 @@ class Log {
   }
 
   static void info(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+    if (kReleaseMode) return;
     _logger.i(
       message,
       error: error,
@@ -36,6 +41,7 @@ class Log {
 
   static void warning(dynamic message,
       [dynamic error, StackTrace? stackTrace]) {
+    if (kReleaseMode) return;
     _logger.w(
       message,
       error: error,
@@ -53,6 +59,7 @@ class Log {
 
   static void highlight(dynamic message,
       [dynamic error, StackTrace? stackTrace]) {
+    if (kReleaseMode) return;
     _logger.f(
       message,
       error: error,
