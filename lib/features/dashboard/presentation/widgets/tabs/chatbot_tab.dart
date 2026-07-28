@@ -15,9 +15,12 @@ class ChatbotTab extends GetView<DashboardController> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSizes.w15,
+      padding: EdgeInsets.only(
+        left: AppSizes.w15,
+        right: AppSizes.w15,
+        bottom: bottomInset > 0 ? AppSizes.h8 : 0,
       ),
       child: Column(
         children: [
@@ -26,10 +29,14 @@ class ChatbotTab extends GetView<DashboardController> {
               () => ListView.builder(
                 reverse: true,
                 itemCount: controller.state.chatMessages.length,
-                itemBuilder: (context, index) => ChatBubble(
-                  chatMessage: controller.state.chatMessages[
-                      controller.state.chatMessages.length - 1 - index],
-                ),
+                itemBuilder: (context, index) {
+                  final message = controller.state.chatMessages[
+                      controller.state.chatMessages.length - 1 - index];
+                  return ChatBubble(
+                    key: ValueKey('${message.isUser}_${message.text}_$index'),
+                    chatMessage: message,
+                  );
+                },
               ),
             ),
           ),

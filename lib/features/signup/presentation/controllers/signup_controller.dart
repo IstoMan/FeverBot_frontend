@@ -12,6 +12,14 @@ class SignupController extends GetxController {
 
   SignupController({required this.getSignupUseCase, required this.state});
 
+  @override
+  void onClose() {
+    state.nameController.dispose();
+    state.emailController.dispose();
+    state.passwordController.dispose();
+    super.onClose();
+  }
+
   Future<void> signup() async {
     final result = await getSignupUseCase(
       GetSignupDataUseCaseParams(

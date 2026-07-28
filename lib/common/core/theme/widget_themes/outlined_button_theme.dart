@@ -12,7 +12,7 @@ class ROutlinedButtonTheme {
       elevation: 0,
       foregroundColor: AppColors.black2,
       side: const BorderSide(color: AppColors.primary),
-      textStyle: AppTextStyles.interMediumSemiBold,
+      textStyle: AppTextStyles.geistMediumSemiBold,
       padding: EdgeInsets.symmetric(
           vertical: AppSizes.h20, horizontal: AppSizes.w20),
       shape: RoundedRectangleBorder(
@@ -25,7 +25,7 @@ class ROutlinedButtonTheme {
     style: OutlinedButton.styleFrom(
       foregroundColor: AppColors.white,
       side: const BorderSide(color: AppColors.black),
-      textStyle: AppTextStyles.interMediumSemiBold,
+      textStyle: AppTextStyles.geistMediumSemiBold,
       padding: EdgeInsets.symmetric(
           vertical: AppSizes.h20, horizontal: AppSizes.w20),
       shape: RoundedRectangleBorder(

@@ -11,6 +11,8 @@ class RTextField extends StatelessWidget {
   final IconData? icon;
   final TextEditingController? controller;
   final TextInputType? inputType;
+  final bool obscureText;
+  final String? Function(String?)? validator;
 
   const RTextField({
     super.key,
@@ -19,6 +21,8 @@ class RTextField extends StatelessWidget {
     this.icon,
     this.controller,
     this.inputType,
+    this.obscureText = false,
+    this.validator,
   });
 
   @override
@@ -41,6 +45,8 @@ class RTextField extends StatelessWidget {
           child: TextFormField(
             keyboardType: inputType,
             controller: controller,
+            obscureText: obscureText,
+            validator: validator,
             decoration: InputDecoration(
               prefixIcon: icon != null ? Icon(icon) : null,
               hintText: hint,

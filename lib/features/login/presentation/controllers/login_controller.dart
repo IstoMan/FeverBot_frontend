@@ -12,6 +12,13 @@ class LoginController extends GetxController {
 
   LoginController({required this.getLoginUseCase, required this.state});
 
+  @override
+  void onClose() {
+    state.emailController.dispose();
+    state.passwordController.dispose();
+    super.onClose();
+  }
+
   Future<void> fetchLoginData() async {
     state.isLoading.value = true;
     final result = await getLoginUseCase.call(

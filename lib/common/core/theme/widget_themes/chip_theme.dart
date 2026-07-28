@@ -7,7 +7,7 @@ class RChipTheme {
   RChipTheme._();
 
   static ChipThemeData lightChipTheme = ChipThemeData(
-    labelStyle: AppTextStyles.interMediumMedium,
+    labelStyle: AppTextStyles.geistMediumMedium,
     backgroundColor: AppColors.primaryLight,
     selectedColor: AppColors.primary,
     shape: RoundedRectangleBorder(

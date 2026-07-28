@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,10 +11,19 @@ import '../../../../../common/resources/app_resources/app_colors.dart';
 import '../../../../../common/resources/app_resources/app_text_styles.dart';
 
 class QrCodeDialog {
+  static Uint8List decodeQrBytes(String imageBase64) {
+    final payload = imageBase64.contains(',')
+        ? imageBase64.split(',').last
+        : imageBase64;
+    return base64Decode(payload);
+  }
+
   static show({
     required String imageBase64,
+    Uint8List? decodedBytes,
     VoidCallback? onShare,
   }) {
+    final bytes = decodedBytes ?? decodeQrBytes(imageBase64);
     Get.dialog(
       AlertDialog(
         backgroundColor: AppColors.scaffoldBg,
@@ -37,9 +47,10 @@ class QrCodeDialog {
               ),
               AppGaps.h10,
               Image.memory(
-                base64Decode(
-                  imageBase64,
-                ),
+                bytes,
+                cacheWidth: 512,
+                cacheHeight: 512,
+                gaplessPlayback: true,
               ),
               AppGaps.h20,
               SizedBox(

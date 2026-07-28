@@ -1,11 +1,11 @@
 {
-    "name": "manifesto",
-    "short_name": "manifesto",
+    "name": "FeverBot",
+    "short_name": "FeverBot",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project using Clean Architecture",
+    "background_color": "#F9F9F9",
+    "theme_color": "#AF2900",
+    "description": "FeverBot — your personal health risk companion.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

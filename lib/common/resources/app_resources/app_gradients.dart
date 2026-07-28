@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 
-/// This is an example of commonly use gradient class file
+/// Shared gradients for FeverBot
 class AppGradients {
-  static const cyanPurpleGradient = LinearGradient(
+  static const primaryGradient = LinearGradient(
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
     colors: [
       AppColors.primary,
-      AppColors.purple,
+      AppColors.primaryVariant,
     ],
   );
   static const blackGradient = LinearGradient(

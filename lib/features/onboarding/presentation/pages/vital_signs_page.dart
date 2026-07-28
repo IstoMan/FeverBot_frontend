@@ -27,7 +27,8 @@ class VitalSignsPage extends GetView<OnboardingController> {
         automaticallyImplyLeading: false,
         title: const Text(AppStrings.appBarText),
       ),
-      body: SingleChildScrollView(
+      body: SafeArea(
+        child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: AppSizes.w15),
@@ -110,6 +111,7 @@ class VitalSignsPage extends GetView<OnboardingController> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

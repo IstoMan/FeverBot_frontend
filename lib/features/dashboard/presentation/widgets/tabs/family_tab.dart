@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/Get.dart';
 import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
 import 'package:manifesto/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/common/family_member.dart';
@@ -20,7 +20,7 @@ class FamilyTab extends GetView<DashboardController> {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Padding(
-        padding: EdgeInsetsGeometry.symmetric(
+        padding: EdgeInsets.symmetric(
           horizontal: AppSizes.w15,
         ),
         child: Column(
@@ -38,14 +38,15 @@ class FamilyTab extends GetView<DashboardController> {
             Text(
               "FAMILY",
               style: AppTextStyles.geistExtraExtraLargeRegular.copyWith(
-                  fontSize: AppSizes.f48,
-                  color: AppColors.primary,
-                  height: 1.0),
+                fontSize: AppSizes.f48,
+                color: AppColors.primary,
+                height: 1.0,
+              ),
             ),
             AppGaps.h20,
             const DescriptionContainer(
               data:
-                  "Administrative management of the nuclear health unit. Manage permissions, dietary overrides, and biometric sharing protocols for all linked members.",
+                  "Invite household members, share biometric updates, and keep everyone aligned on care.",
             ),
             AppGaps.h30,
             SizedBox(
@@ -80,19 +81,21 @@ class FamilyTab extends GetView<DashboardController> {
             ),
             AppGaps.h30,
             Obx(
-              () => controller.state.family.value == null
-                  ? const SizedBox.shrink()
-                  : ListView.separated(
-                      shrinkWrap: true,
-                      separatorBuilder: (context, index) => AppGaps.h20,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount:
-                          controller.state.family.value?.members.length ?? 0,
-                      itemBuilder: (context, index) => FamilyMember(
-                        member: controller.state.family.value!.members[index],
+              () {
+                final members = controller.state.family.value?.members ?? [];
+                if (members.isEmpty) return const SizedBox.shrink();
+                return Column(
+                  children: [
+                    for (var i = 0; i < members.length; i++) ...[
+                      if (i > 0) AppGaps.h20,
+                      FamilyMember(
+                        member: members[i],
                         onPressed: controller.deleteMember,
                       ),
-                    ),
+                    ],
+                  ],
+                );
+              },
             ),
             AppGaps.h30,
           ],
