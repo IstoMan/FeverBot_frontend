@@ -26,18 +26,25 @@ class ChatbotTab extends GetView<DashboardController> {
         children: [
           Expanded(
             child: Obx(
-              () => ListView.builder(
-                reverse: true,
-                itemCount: controller.state.chatMessages.length,
-                itemBuilder: (context, index) {
-                  final message = controller.state.chatMessages[
-                      controller.state.chatMessages.length - 1 - index];
-                  return ChatBubble(
-                    key: ValueKey('${message.isUser}_${message.text}_$index'),
-                    chatMessage: message,
-                  );
-                },
-              ),
+              () {
+                final messages = controller.state.chatMessages;
+                final chatting = controller.state.chatting.value;
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final message = messages[messages.length - 1 - index];
+                    final isStreamingBot = chatting &&
+                        !message.isUser &&
+                        index == 0;
+                    return ChatBubble(
+                      key: ValueKey(message.id),
+                      chatMessage: message,
+                      isStreaming: isStreamingBot,
+                    );
+                  },
+                );
+              },
             ),
           ),
           AppGaps.h10,

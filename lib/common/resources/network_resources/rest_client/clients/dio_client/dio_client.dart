@@ -201,4 +201,56 @@ class DioClient extends RestClient {
       rethrow;
     }
   }
+
+  @override
+  Future<ResponseBody> postEventStream(
+    String uri, {
+    required FormData formData,
+    Map<String, String>? headers,
+  }) async {
+    if (!await networkInfo.isConnected()) {
+      showToastNotification(
+        title: "oops!",
+        body: "Looks Like You are not connected to internet",
+        messageType: ToastificationType.error,
+      );
+      throw DioException(
+        requestOptions: RequestOptions(path: uri),
+        message: "No internet connection",
+        type: DioExceptionType.connectionError,
+      );
+    }
+
+    try {
+      final response = await _dio.post<ResponseBody>(
+        uri,
+        data: formData,
+        options: Options(
+          responseType: ResponseType.stream,
+          contentType: 'multipart/form-data',
+          receiveTimeout: Duration.zero,
+          headers: {
+            'Accept': 'text/event-stream',
+            ...?headers,
+          },
+        ),
+      );
+
+      final body = response.data;
+      if (body == null) {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          message: "Empty SSE response body",
+          response: response,
+          type: DioExceptionType.badResponse,
+        );
+      }
+      return body;
+    } catch (e) {
+      if (e is DioException) {
+        logError(e);
+      }
+      rethrow;
+    }
+  }
 }

@@ -9,7 +9,7 @@ import 'package:manifesto/features/dashboard/domain/usecases/get_family_usecase.
 import 'package:manifesto/features/dashboard/domain/usecases/get_user_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/invite_member_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/new_chat_usecase.dart';
-import 'package:manifesto/features/dashboard/domain/usecases/send_chat_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/stream_chat_usecase.dart';
 import 'package:manifesto/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:manifesto/features/dashboard/presentation/states/dashboard_state.dart';
 
@@ -33,8 +33,8 @@ class DashboardBinding extends Bindings {
         repository: Get.find(),
       ),
     );
-    Get.lazyPut<SendChatUseCase>(
-      () => SendChatUseCase(
+    Get.lazyPut<StreamChatUseCase>(
+      () => StreamChatUseCase(
         repository: Get.find(),
       ),
     );
@@ -68,7 +68,7 @@ class DashboardBinding extends Bindings {
       () => DashboardController(
         state: Get.find<DashboardState>(),
         newChatUseCase: Get.find<NewChatUseCase>(),
-        sendChatUseCase: Get.find<SendChatUseCase>(),
+        streamChatUseCase: Get.find<StreamChatUseCase>(),
         getFamilyUseCase: Get.find<GetFamilyUseCase>(),
         inviteMemberUseCase: Get.find<InviteMemberUseCase>(),
         acceptInviteUseCase: Get.find(),

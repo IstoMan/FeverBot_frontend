@@ -2,24 +2,20 @@ import 'package:manifesto/features/dashboard/domain/entities/chat_stream_event.d
 import 'package:manifesto/features/dashboard/domain/entities/send_chat_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/repositories/dashboard_repository.dart';
 
-/// Streams assistant reply events for a chat message (SSE).
-///
-/// Prefer [StreamChatUseCase]; this class remains as a thin alias for callers
-/// that still import the old send-chat use case path.
-class SendChatUseCase {
+class StreamChatUseCase {
   final DashboardRepository repository;
 
-  SendChatUseCase({required this.repository});
+  StreamChatUseCase({required this.repository});
 
-  Stream<ChatStreamEvent> call(SendChatUseCaseParams params) {
+  Stream<ChatStreamEvent> call(StreamChatUseCaseParams params) {
     return repository.streamChat(params.request);
   }
 }
 
-class SendChatUseCaseParams {
+class StreamChatUseCaseParams {
   final SendChatRequestEntity request;
 
-  SendChatUseCaseParams({
+  StreamChatUseCaseParams({
     required this.request,
   });
 }

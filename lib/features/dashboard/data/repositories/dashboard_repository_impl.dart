@@ -10,10 +10,10 @@ import 'package:manifesto/features/dashboard/data/models/delete_member_model.dar
 import 'package:manifesto/features/dashboard/data/models/family_model.dart';
 import 'package:manifesto/features/dashboard/data/models/invite_model.dart';
 import 'package:manifesto/features/dashboard/data/models/new_chat_model.dart';
-import 'package:manifesto/features/dashboard/data/models/send_chat_model.dart';
 import 'package:manifesto/features/dashboard/data/models/user_model.dart';
 import 'package:manifesto/features/dashboard/domain/entities/accept_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/chat_history_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/chat_stream_event.dart';
 import 'package:manifesto/features/dashboard/domain/entities/dashboard_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_request_entity.dart';
@@ -21,7 +21,6 @@ import 'package:manifesto/features/dashboard/domain/entities/family_entity.dart'
 import 'package:manifesto/features/dashboard/domain/entities/invite_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/invite_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/new_chat_entity.dart';
-import 'package:manifesto/features/dashboard/domain/entities/send_chat_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/send_chat_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/user_entity.dart';
 import 'package:manifesto/features/dashboard/domain/repositories/dashboard_repository.dart';
@@ -70,20 +69,8 @@ class DashboardRepositoryImpl extends DashboardRepository {
   }
 
   @override
-  ResultFuture<SendChatEntity> sendChat(SendChatRequestEntity request) async {
-    try {
-      final SendChatModel model = await remoteDataSource.sendChat(request);
-      return Right(model.toEntity());
-    } on APIException catch (e) {
-      Log.error("API Exception: ${e.message}");
-      return Left(APIException(message: e.message, statusCode: e.statusCode));
-    } on StorageException catch (e) {
-      Log.error("Storage Exception: ${e.message}");
-      return Left(StorageException(message: e.message));
-    } catch (e, stackTrace) {
-      Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
-      return Left(APIException(message: e.toString(), statusCode: -1));
-    }
+  Stream<ChatStreamEvent> streamChat(SendChatRequestEntity request) {
+    return remoteDataSource.streamChat(request);
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:manifesto/common/core/utils/errors/exceptions.dart';
 import 'package:manifesto/common/core/utils/logger/app_logger.dart';
 import 'package:manifesto/common/resources/network_resources/api_endpoints.dart';
 import 'package:manifesto/common/resources/network_resources/rest_client/rest_client.dart';
+import 'package:manifesto/features/dashboard/data/datasources/remote/sse_chat_parser.dart';
 import 'package:manifesto/features/dashboard/data/models/accept_request_model.dart';
 import 'package:manifesto/features/dashboard/data/models/chat_history_model.dart';
 import 'package:manifesto/features/dashboard/data/models/dashboard_model.dart';
@@ -12,21 +13,19 @@ import 'package:manifesto/features/dashboard/data/models/family_model.dart';
 import 'package:manifesto/features/dashboard/data/models/invite_model.dart';
 import 'package:manifesto/features/dashboard/data/models/invite_request_model.dart';
 import 'package:manifesto/features/dashboard/data/models/new_chat_model.dart';
-import 'package:manifesto/features/dashboard/data/models/send_chat_model.dart';
-import 'package:manifesto/features/dashboard/data/models/send_chat_request_model.dart';
 import 'package:manifesto/features/dashboard/data/models/user_model.dart';
 import 'package:manifesto/features/dashboard/domain/entities/accept_request_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/chat_stream_event.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/invite_request_entity.dart';
-
-import '../../../domain/entities/send_chat_request_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/send_chat_request_entity.dart';
 
 abstract class DashboardRemoteDataSource {
   Future<DashboardModel> fetchDashboardData();
 
   Future<NewChatModel> startChat();
 
-  Future<SendChatModel> sendChat(SendChatRequestEntity request);
+  Stream<ChatStreamEvent> streamChat(SendChatRequestEntity request);
 
   Future<FamilyModel> getFamily();
 
@@ -43,8 +42,12 @@ abstract class DashboardRemoteDataSource {
 
 class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
   final RestClient _restClient;
+  final SseChatParser _sseParser;
 
-  DashboardRemoteDataSourceImpl(this._restClient);
+  DashboardRemoteDataSourceImpl(
+    this._restClient, {
+    SseChatParser sseParser = const SseChatParser(),
+  }) : _sseParser = sseParser;
 
   @override
   Future<DashboardModel> fetchDashboardData() async {
@@ -115,38 +118,37 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
   }
 
   @override
-  Future<SendChatModel> sendChat(SendChatRequestEntity request) async {
-    final requestModel = SendChatRequestModel.fromEntity(request);
+  Stream<ChatStreamEvent> streamChat(SendChatRequestEntity request) async* {
     try {
-      final response = await _restClient.post(
+      final body = await _restClient.postEventStream(
         APIEndpoints.sendChat(request.chatId),
-        data: requestModel.toJson(),
+        formData: FormData.fromMap({
+          'message': request.message,
+        }),
       );
-      return SendChatModel.fromJson(response);
+      yield* _sseParser.parse(body);
     } on DioException catch (dioError, stackTrace) {
       Log.warning(
-        "DioException while sending new chat",
+        "DioException while streaming chat",
         dioError,
         stackTrace,
       );
 
       final statusCode = dioError.response?.statusCode ?? -1;
       final message = dioError.response?.data is Map
-          ? dioError.response?.data["details"]?.toString() ?? dioError.message
+          ? dioError.response?.data["details"]?.toString() ??
+              dioError.response?.data["detail"]?.toString() ??
+              dioError.message
           : dioError.message ?? "Unknown error";
 
-      throw APIException(message: message!, statusCode: statusCode);
+      yield ChatStreamError(message ?? "Stream failed ($statusCode)");
     } catch (e, stackTrace) {
       Log.warning(
-        "Unexpected error while sending new chat",
+        "Unexpected error while streaming chat",
         e,
         stackTrace,
       );
-
-      throw APIException(
-        message: e.toString(),
-        statusCode: -1,
-      );
+      yield ChatStreamError(e.toString());
     }
   }
 

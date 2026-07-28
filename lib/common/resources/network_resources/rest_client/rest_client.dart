@@ -81,11 +81,23 @@ abstract class RestClient {
 
   void logError(DioException err) {
     final response = err.response;
+    String dataSummary = "No response body";
+    if (response?.data != null) {
+      try {
+        if (response!.data is ResponseBody) {
+          dataSummary = "<streamed body>";
+        } else {
+          dataSummary = _encoder.convert(response.data);
+        }
+      } catch (_) {
+        dataSummary = response!.data.toString();
+      }
+    }
     Log.error(
       "API Error from ${requestDetails(err.requestOptions)}"
       "Status: ${response?.statusCode}\n"
       "Message: ${response?.statusMessage}\n"
-      "Data: ${response?.data != null ? _encoder.convert(response?.data) : "No response body"}",
+      "Data: $dataSummary",
     );
   }
 
@@ -112,4 +124,11 @@ abstract class RestClient {
       void Function(int, int)? onSendProgress});
 
   Future<dynamic> patch(String uri, {Map<String, dynamic>? data});
+
+  /// POST that returns an SSE byte stream (`text/event-stream`).
+  Future<ResponseBody> postEventStream(
+    String uri, {
+    required FormData formData,
+    Map<String, String>? headers,
+  });
 }
