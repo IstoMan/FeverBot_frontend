@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:manifesto/common//resources/app_resources/app_colors.dart';
-import 'package:manifesto/common//resources/app_resources/app_sizes.dart';
+import 'package:manifesto/common/resources/app_resources/app_colors.dart';
+import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
 import 'package:manifesto/common/resources/app_resources/app_text_styles.dart';
 
 class RAppBarTheme {

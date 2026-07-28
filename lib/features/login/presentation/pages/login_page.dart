@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/Get.dart';
+import 'package:get/get.dart';
 import 'package:manifesto/common/resources/app_resources/app_colors.dart';
 import 'package:manifesto/common/resources/app_resources/app_gaps.dart';
 import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
