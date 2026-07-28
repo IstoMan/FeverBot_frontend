@@ -1,15 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:manifesto/common/resources/app_resources/app_colors.dart';
 import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
-
-final TextStyle jetBrainsMono = GoogleFonts.jetBrainsMono(
-  fontSize: AppSizes.f14,
-);
-
-final TextStyle inter = GoogleFonts.inter(
-  fontSize: AppSizes.f14,
-);
 
 class AppTextStyles {
   AppTextStyles._();
@@ -44,7 +35,7 @@ class AppTextStyles {
     required FontWeight fontWeight,
   }) =>
       TextStyle(
-        fontFamily: 'JetBrainsMono',
+        fontFamily: 'Geist',
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: _defaultFontColor,
@@ -55,7 +46,7 @@ class AppTextStyles {
     required FontWeight fontWeight,
   }) =>
       TextStyle(
-        fontFamily: 'Inter',
+        fontFamily: 'Geist',
         fontSize: fontSize,
         fontWeight: fontWeight,
         color: _defaultFontColor,

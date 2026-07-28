@@ -17,8 +17,8 @@ class DioClient extends RestClient {
       : _dio = Dio(
           BaseOptions(
             baseUrl: dotenv.env['BASE_URL'] ?? 'default_base_url',
-            connectTimeout: const Duration(seconds: 300),
-            receiveTimeout: const Duration(seconds: 300),
+            connectTimeout: const Duration(seconds: 20),
+            receiveTimeout: const Duration(seconds: 20),
             contentType: 'application/json',
             headers: {
               "Authorization": "Bearer ${LocalClient.getString(
@@ -69,7 +69,7 @@ class DioClient extends RestClient {
       }
       final response = await _dio.get(
         uri,
-        // queryParameters: queryParameters,
+        queryParameters: queryParameters,
       );
       logResponse(response);
       return response.data;

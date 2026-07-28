@@ -8,7 +8,7 @@ import 'package:manifesto/common/resources/network_resources/rest_client/rest_cl
 class AppBinding extends Bindings {
   @override
   Future<void> dependencies() async {
-    ///TODO: inject the dependencies that are common to manifesto
+    /// Inject dependencies common to FeverBot
     Get.lazyPut<NetworkInfo>(
       () => NetworkInfo(connectivity: Connectivity()),
       fenix: true,

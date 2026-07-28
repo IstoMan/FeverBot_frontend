@@ -18,17 +18,17 @@ class RTextFormFieldTheme {
     hintStyle: AppTextStyles.geistNormalRegular.copyWith(
       color: const Color(0x805B403A),
     ),
-    labelStyle: AppTextStyles.interExtraSmallMedium.copyWith(
+    labelStyle: AppTextStyles.geistExtraSmallMedium.copyWith(
       color: AppColors.black2,
     ),
-    floatingLabelStyle: AppTextStyles.interExtraSmallMedium.copyWith(
+    floatingLabelStyle: AppTextStyles.geistExtraSmallMedium.copyWith(
       color: AppColors.primary,
     ),
-    errorStyle: AppTextStyles.interExtraSmallRegular.copyWith(
+    errorStyle: AppTextStyles.geistExtraSmallRegular.copyWith(
       color: AppColors.red,
       height: 1.2,
     ),
-    helperStyle: AppTextStyles.interExtraSmallRegular.copyWith(
+    helperStyle: AppTextStyles.geistExtraSmallRegular.copyWith(
       color: AppColors.black4,
     ),
     border: OutlineInputBorder(
@@ -59,20 +59,20 @@ class RTextFormFieldTheme {
     suffixIconColor: AppColors.primary,
 
     // Text styles
-    hintStyle: AppTextStyles.interNormalRegular.copyWith(
+    hintStyle: AppTextStyles.geistNormalRegular.copyWith(
       color: AppColors.white2,
     ),
-    labelStyle: AppTextStyles.interExtraSmallMedium.copyWith(
+    labelStyle: AppTextStyles.geistExtraSmallMedium.copyWith(
       color: AppColors.white2,
     ),
-    floatingLabelStyle: AppTextStyles.interExtraSmallMedium.copyWith(
+    floatingLabelStyle: AppTextStyles.geistExtraSmallMedium.copyWith(
       color: AppColors.primary,
     ),
-    errorStyle: AppTextStyles.interExtraSmallRegular.copyWith(
+    errorStyle: AppTextStyles.geistExtraSmallRegular.copyWith(
       color: AppColors.red,
       height: 1.2,
     ),
-    helperStyle: AppTextStyles.interExtraSmallRegular.copyWith(
+    helperStyle: AppTextStyles.geistExtraSmallRegular.copyWith(
       color: AppColors.white2,
     ),
 
@@ -113,7 +113,7 @@ class RTextFormFieldTheme {
   static InputDecorationTheme searchFieldTheme = InputDecorationTheme(
     filled: true,
     fillColor: AppColors.black6,
-    hintStyle: AppTextStyles.interSmallRegular.copyWith(
+    hintStyle: AppTextStyles.geistSmallRegular.copyWith(
       color: AppColors.white2,
     ),
     prefixIconColor: AppColors.primary,

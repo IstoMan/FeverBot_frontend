@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:manifesto/common/resources/app_resources/app_colors.dart';
 import 'package:manifesto/common/resources/app_resources/app_text_styles.dart';
 
@@ -48,29 +48,38 @@ class RNavigationButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: double.infinity,
-        color: isActive ? AppColors.primary : AppColors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: AppSizes.v22,
-              color: isActive ? AppColors.white : AppColors.black,
+      child: Semantics(
+        button: true,
+        selected: isActive,
+        label: label,
+        child: Material(
+          color: isActive ? AppColors.primary : AppColors.white,
+          child: InkWell(
+            onTap: onTap,
+            child: SizedBox(
+              height: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    size: AppSizes.v22,
+                    color: isActive ? AppColors.white : AppColors.black,
+                  ),
+                  Text(
+                    label,
+                    style: AppTextStyles.geistSmallSemiBold.copyWith(
+                      color: isActive ? AppColors.white : AppColors.black,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Text(
-              label,
-              style: AppTextStyles.geistSmallSemiBold.copyWith(
-                  color: isActive ? AppColors.white : AppColors.black,
-                  letterSpacing: -0.5),
-            ),
-          ],
+          ),
         ),
       ),
-    ));
+    );
   }
 }

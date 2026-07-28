@@ -90,15 +90,20 @@ class DashboardRepositoryImpl extends DashboardRepository {
   ResultFuture<FamilyEntity> getFamily() async {
     try {
       final FamilyModel model = await remoteDataSource.getFamily();
+      await localDataSource.cacheFamily(model);
       return Right(model.toEntity());
     } on APIException catch (e) {
       Log.error("API Exception: ${e.message}");
+      final cached = await localDataSource.getCachedFamily();
+      if (cached != null) return Right(cached.toEntity());
       return Left(APIException(message: e.message, statusCode: e.statusCode));
     } on StorageException catch (e) {
       Log.error("Storage Exception: ${e.message}");
       return Left(StorageException(message: e.message));
     } catch (e, stackTrace) {
       Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
+      final cached = await localDataSource.getCachedFamily();
+      if (cached != null) return Right(cached.toEntity());
       return Left(APIException(message: e.toString(), statusCode: -1));
     }
   }
@@ -141,7 +146,8 @@ class DashboardRepositoryImpl extends DashboardRepository {
   ResultFuture<FamilyEntity> acceptInvite(AcceptRequestEntity request) async {
     try {
       final FamilyModel model = await remoteDataSource.acceptInvite(request);
-      return Right(model);
+      await localDataSource.cacheFamily(model);
+      return Right(model.toEntity());
     } on APIException catch (e) {
       Log.error("API Exception: ${e.message}");
       return Left(APIException(message: e.message, statusCode: e.statusCode));
@@ -177,15 +183,20 @@ class DashboardRepositoryImpl extends DashboardRepository {
   ResultFuture<UserEntity> getUser() async {
     try {
       final UserModel model = await remoteDataSource.getUser();
-      return Right(model);
+      await localDataSource.cacheUser(model);
+      return Right(model.toEntity());
     } on APIException catch (e) {
       Log.error("API Exception: ${e.message}");
+      final cached = await localDataSource.getCachedUser();
+      if (cached != null) return Right(cached.toEntity());
       return Left(APIException(message: e.message, statusCode: e.statusCode));
     } on StorageException catch (e) {
       Log.error("Storage Exception: ${e.message}");
       return Left(StorageException(message: e.message));
     } catch (e, stackTrace) {
       Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
+      final cached = await localDataSource.getCachedUser();
+      if (cached != null) return Right(cached.toEntity());
       return Left(APIException(message: e.toString(), statusCode: -1));
     }
   }

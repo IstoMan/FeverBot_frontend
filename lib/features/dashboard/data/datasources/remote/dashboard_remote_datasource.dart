@@ -120,8 +120,7 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
     try {
       final response = await _restClient.post(
         APIEndpoints.sendChat(request.chatId),
-        data: FormData.fromMap(requestModel.toJson()),
-        contentType: "multipart/form-data",
+        data: requestModel.toJson(),
       );
       return SendChatModel.fromJson(response);
     } on DioException catch (dioError, stackTrace) {

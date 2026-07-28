@@ -15,6 +15,18 @@ class OnboardingController extends GetxController {
     required this.state,
   });
 
+  @override
+  void onClose() {
+    state.heightController.dispose();
+    state.weightController.dispose();
+    state.systolicController.dispose();
+    state.diastolicController.dispose();
+    state.cholesterolController.dispose();
+    state.glucoseController.dispose();
+    state.ageController.dispose();
+    super.onClose();
+  }
+
   Future<void> completeProfile() async {
     final result = await getOnboardingUseCase.call(
       GetOnboardingDataUseCaseParams(

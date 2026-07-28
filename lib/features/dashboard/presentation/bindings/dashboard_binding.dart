@@ -4,9 +4,7 @@ import 'package:manifesto/features/dashboard/data/datasources/remote/dashboard_r
 import 'package:manifesto/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:manifesto/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/accept_invite_usecase.dart';
-import 'package:manifesto/features/dashboard/domain/usecases/dashboard_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/delete_member_usecase.dart';
-import 'package:manifesto/features/dashboard/domain/usecases/get_chats_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/get_family_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/get_user_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/invite_member_usecase.dart';
@@ -30,11 +28,6 @@ class DashboardBinding extends Bindings {
         localDataSource: Get.find(),
       ),
     );
-    Get.lazyPut<GetDashboardUseCase>(
-      () => GetDashboardUseCase(
-        Get.find(),
-      ),
-    );
     Get.lazyPut<NewChatUseCase>(
       () => NewChatUseCase(
         repository: Get.find(),
@@ -52,11 +45,6 @@ class DashboardBinding extends Bindings {
     );
     Get.lazyPut(
       () => InviteMemberUseCase(
-        repository: Get.find(),
-      ),
-    );
-    Get.lazyPut(
-      () => GetChatsUseCase(
         repository: Get.find(),
       ),
     );
@@ -83,7 +71,6 @@ class DashboardBinding extends Bindings {
         sendChatUseCase: Get.find<SendChatUseCase>(),
         getFamilyUseCase: Get.find<GetFamilyUseCase>(),
         inviteMemberUseCase: Get.find<InviteMemberUseCase>(),
-        getChatsUseCase: Get.find(),
         acceptInviteUseCase: Get.find(),
         deleteMemberUseCase: Get.find(),
         getUserUseCase: Get.find(),

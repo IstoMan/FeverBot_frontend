@@ -12,8 +12,8 @@ ToastificationItem showToastNotification({
 }) {
   return toastification.show(
     context: Get.context,
-    title: Text(title, style: AppTextStyles.interMediumBold),
-    description: Text(body, style: AppTextStyles.interNormalRegular),
+    title: Text(title, style: AppTextStyles.geistMediumBold),
+    description: Text(body, style: AppTextStyles.geistNormalRegular),
     autoCloseDuration: const Duration(seconds: 5),
     closeButton: const ToastCloseButton(showType: CloseButtonShowType.onHover),
     dragToClose: true,

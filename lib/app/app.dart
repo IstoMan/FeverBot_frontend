@@ -23,7 +23,7 @@ class App extends StatelessWidget {
         splitScreenMode: true,
         builder: (context, child) {
           return GetMaterialApp(
-            title: 'manifesto',
+            title: 'FeverBot',
             initialBinding: AppBinding(),
             initialRoute: AppPages.initial,
             getPages: AppPages.pages,

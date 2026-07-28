@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:manifesto/common/resources/app_resources/app_colors.dart';
+import 'package:manifesto/common/resources/app_resources/app_gaps.dart';
 import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
 import 'package:manifesto/common/resources/app_resources/app_text_styles.dart';
 import 'package:manifesto/common/widgets/shadow_container.dart';
 import 'package:manifesto/features/dashboard/domain/entities/family_entity.dart';
-
-import '../../../../../common/resources/app_resources/app_gaps.dart';
 
 class FamilyMember extends StatelessWidget {
   final Function(String)? onPressed;
@@ -33,11 +32,10 @@ class FamilyMember extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "UUID: ${member.uuid}",
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.geistSmallMedium.copyWith(
-                color: const Color(0xFFA1A1AA),
+              member.role.toUpperCase(),
+              style: AppTextStyles.geistNormalBold.copyWith(
+                letterSpacing: 1.4,
+                color: AppColors.primary,
               ),
             ),
             AppGaps.h4,
@@ -50,34 +48,30 @@ class FamilyMember extends StatelessWidget {
                 color: AppColors.black,
               ),
             ),
-            AppGaps.h4,
-            Text(
-              member.role.toUpperCase(),
-              style: AppTextStyles.geistNormalBold.copyWith(
-                letterSpacing: 1.4,
-                color: AppColors.primary,
-              ),
-            ),
             AppGaps.h30,
-            GestureDetector(
-              onTap: () => onPressed?.call(member.uuid),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(
-                    Icons.delete_outline,
-                    size: AppSizes.v18,
-                    color: const Color(0xFFA1A1AA),
-                  ),
-                  AppGaps.w2,
-                  Text(
-                    "DELETE",
-                    style: AppTextStyles.geistSmallBold.copyWith(
+            Semantics(
+              button: true,
+              label: "Delete ${member.name}",
+              child: GestureDetector(
+                onTap: () => onPressed?.call(member.uuid),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(
+                      Icons.delete_outline,
+                      size: AppSizes.v18,
                       color: const Color(0xFFA1A1AA),
-                      letterSpacing: 1.2,
                     ),
-                  )
-                ],
+                    AppGaps.w2,
+                    Text(
+                      "DELETE",
+                      style: AppTextStyles.geistSmallBold.copyWith(
+                        color: const Color(0xFFA1A1AA),
+                        letterSpacing: 1.2,
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
           ],

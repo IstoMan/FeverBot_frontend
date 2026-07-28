@@ -42,124 +42,84 @@ class MetricsContainer extends StatelessWidget {
             ),
             AppGaps.h20,
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
-                  child: RShadowContainer(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppSizes.w10,
-                        vertical: AppSizes.h10,
-                      ),
-                      decoration: const BoxDecoration(
-                        color: AppColors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("AGE"),
-                          Text(
-                            age.toString(),
-                            style: AppTextStyles.geistExtraExtraLargeExtraBold
-                                .copyWith(
-                              color: AppColors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  child: _MetricCell(label: "AGE", value: age.toString()),
                 ),
-                AppGaps.w20,
+                Container(
+                  width: 1,
+                  height: AppSizes.h48,
+                  color: AppColors.black.withOpacity(0.12),
+                ),
                 Expanded(
-                  child: RShadowContainer(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppSizes.w10,
-                        vertical: AppSizes.h10,
-                      ),
-                      decoration: const BoxDecoration(
-                        color: AppColors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("GENDER"),
-                          Text(
-                            gender.toUpperCase(),
-                            style: AppTextStyles.geistExtraExtraLargeExtraBold
-                                .copyWith(
-                              color: AppColors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  child: _MetricCell(
+                    label: "GENDER",
+                    value: gender.toUpperCase(),
                   ),
                 ),
               ],
             ),
-            AppGaps.h20,
+            Divider(
+              height: AppSizes.h30,
+              thickness: 1,
+              color: AppColors.black.withOpacity(0.12),
+            ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
-                  child: RShadowContainer(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppSizes.w10,
-                        vertical: AppSizes.h10,
-                      ),
-                      decoration: const BoxDecoration(
-                        color: AppColors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("HEIGHT"),
-                          Text(
-                            height.toStringAsFixed(1),
-                            style: AppTextStyles.geistExtraExtraLargeExtraBold
-                                .copyWith(
-                              color: AppColors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  child: _MetricCell(
+                    label: "HEIGHT",
+                    value: height.toStringAsFixed(1),
                   ),
                 ),
-                AppGaps.w20,
+                Container(
+                  width: 1,
+                  height: AppSizes.h48,
+                  color: AppColors.black.withOpacity(0.12),
+                ),
                 Expanded(
-                  child: RShadowContainer(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppSizes.w10,
-                        vertical: AppSizes.h10,
-                      ),
-                      decoration: const BoxDecoration(
-                        color: AppColors.white,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("WEIGHT"),
-                          Text(
-                            weight.toStringAsFixed(1),
-                            style: AppTextStyles.geistExtraExtraLargeExtraBold
-                                .copyWith(
-                              color: AppColors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  child: _MetricCell(
+                    label: "WEIGHT",
+                    value: weight.toStringAsFixed(1),
                   ),
                 ),
               ],
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _MetricCell extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _MetricCell({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppSizes.w10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppTextStyles.geistSmallRegular.copyWith(
+              color: AppColors.black3,
+              letterSpacing: 1.2,
+            ),
+          ),
+          AppGaps.h4,
+          Text(
+            value,
+            style: AppTextStyles.geistExtraExtraLargeExtraBold.copyWith(
+              color: AppColors.black,
+            ),
+          ),
+        ],
       ),
     );
   }

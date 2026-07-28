@@ -20,7 +20,8 @@ class HabitsPage extends GetView<OnboardingController> {
       appBar: AppBar(
         title: const Text(AppStrings.appBarText),
       ),
-      body: SingleChildScrollView(
+      body: SafeArea(
+        child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: AppSizes.w15),
@@ -90,6 +91,7 @@ class HabitsPage extends GetView<OnboardingController> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

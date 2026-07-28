@@ -1,15 +1,15 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:get/get.dart';
 import 'package:manifesto/common/widgets/toast_message.dart';
 import 'package:manifesto/features/dashboard/domain/entities/accept_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_request_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/family_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/invite_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/send_chat_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/accept_invite_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/delete_member_usecase.dart';
-import 'package:manifesto/features/dashboard/domain/usecases/get_chats_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/get_family_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/get_user_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/invite_member_usecase.dart';
@@ -29,10 +29,15 @@ class DashboardController extends GetxController {
   final SendChatUseCase sendChatUseCase;
   final GetFamilyUseCase getFamilyUseCase;
   final InviteMemberUseCase inviteMemberUseCase;
-  final GetChatsUseCase getChatsUseCase;
   final AcceptInviteUseCase acceptInviteUseCase;
   final DeleteMemberUseCase deleteMemberUseCase;
   final GetUserUseCase getUserUseCase;
+
+  bool _chatLoaded = false;
+  bool _familyLoaded = false;
+  bool _userLoaded = false;
+  Uint8List? _lastQrBytes;
+  String? _lastQrMediaType;
 
   DashboardController({
     required this.state,
@@ -40,7 +45,6 @@ class DashboardController extends GetxController {
     required this.sendChatUseCase,
     required this.getFamilyUseCase,
     required this.inviteMemberUseCase,
-    required this.getChatsUseCase,
     required this.acceptInviteUseCase,
     required this.deleteMemberUseCase,
     required this.getUserUseCase,
@@ -49,22 +53,28 @@ class DashboardController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    startChat();
-    getFamily();
     getUser();
   }
 
-  Future<void> getChatHistory() async {
-    final result = await getChatsUseCase.call();
-    result.fold((error) {
-      showToastNotification(
-        title: "Error",
-        body: error.toString(),
-        messageType: ToastificationType.error,
-      );
-    }, (data) {
-      state.chatHistory.value = data;
-    });
+  @override
+  void onClose() {
+    state.chatController.dispose();
+    super.onClose();
+  }
+
+  void changeTab(int index) {
+    state.currentIndex.value = index;
+    switch (index) {
+      case 0:
+        if (!_userLoaded) getUser();
+        break;
+      case 1:
+        if (!_chatLoaded) startChat();
+        break;
+      case 2:
+        if (!_familyLoaded) getFamily();
+        break;
+    }
   }
 
   Future<void> createInvitation(String relation) async {
@@ -90,36 +100,49 @@ class DashboardController extends GetxController {
         messageType: ToastificationType.error,
       );
     }, (data) {
+      _lastQrBytes = QrCodeDialog.decodeQrBytes(data.QRBase64);
+      _lastQrMediaType = data.QRMediaType;
       QrCodeDialog.show(
         imageBase64: data.QRBase64,
-        onShare: () =>
-            shareQrCode(data.QRBase64, data.QRMediaType, data.inviteUrl),
+        decodedBytes: _lastQrBytes,
+        onShare: () => shareQrCode(
+          data.inviteUrl,
+          bytes: _lastQrBytes,
+          mediaType: _lastQrMediaType,
+        ),
       );
     });
     state.invitingMember.value = false;
   }
 
-  void shareQrCode(String imageBase64, String mediaType, String link) async {
-    final bytes = base64Decode(imageBase64.split(',').last);
+  Future<void> shareQrCode(
+    String link, {
+    Uint8List? bytes,
+    String? mediaType,
+  }) async {
+    final qrBytes = bytes ?? _lastQrBytes;
+    if (qrBytes == null) return;
     final tempDir = await getTemporaryDirectory();
-    final file = File('${tempDir.path}/image.png');
-    await file.writeAsBytes(bytes);
+    final file = File('${tempDir.path}/feverbot_invite.png');
+    await file.writeAsBytes(qrBytes);
     await SharePlus.instance.share(
       ShareParams(
         files: [
           XFile(
             file.path,
-            mimeType: mediaType,
+            mimeType: mediaType ?? _lastQrMediaType ?? 'image/png',
           ),
         ],
-        text: "Scan this QR code to join my family on FamBot!",
+        text: "Scan this QR code to join my family on FeverBot!\n$link",
       ),
     );
   }
 
   Future<void> startChat() async {
+    _chatLoaded = true;
     final result = await newChatUseCase.call();
     result.fold((error) {
+      _chatLoaded = false;
       showToastNotification(
         title: "Error",
         body: error.toString(),
@@ -182,8 +205,10 @@ class DashboardController extends GetxController {
   }
 
   Future<void> getFamily() async {
+    _familyLoaded = true;
     final result = await getFamilyUseCase.call();
     result.fold((error) {
+      _familyLoaded = false;
       showToastNotification(
         title: "Error",
         body: error.toString(),
@@ -220,6 +245,7 @@ class DashboardController extends GetxController {
       );
     }, (data) {
       state.family.value = data;
+      _familyLoaded = true;
     });
   }
 
@@ -236,14 +262,23 @@ class DashboardController extends GetxController {
         messageType: ToastificationType.error,
       );
     }, (data) {
-      state.family.value?.members
-          .removeWhere((member) => member.uuid == data.removedId);
+      final current = state.family.value;
+      if (current == null) return;
+      state.family.value = FamilyEntity(
+        groupId: current.groupId,
+        ownerId: current.ownerId,
+        members: current.members
+            .where((member) => member.uuid != data.removedId)
+            .toList(),
+      );
     });
   }
 
   Future<void> getUser() async {
+    _userLoaded = true;
     final result = await getUserUseCase.call();
     result.fold((error) {
+      _userLoaded = false;
       showToastNotification(
         title: "Error",
         body: error.toString(),
@@ -251,8 +286,6 @@ class DashboardController extends GetxController {
       );
     }, (data) {
       state.user.value = data;
-      showToastNotification(
-          title: "Something", body: (state.user.value == null).toString());
     });
   }
 }
