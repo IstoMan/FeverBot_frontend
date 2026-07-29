@@ -103,6 +103,10 @@ abstract class RestClient {
 
   Future<dynamic> get(String uri, {Map<String, dynamic>? queryParameters});
 
+  /// GET that returns raw response bytes (e.g. file downloads).
+  Future<List<int>> getBytes(String uri,
+      {Map<String, dynamic>? queryParameters});
+
   Future<dynamic> post(
     String uri, {
     dynamic data,

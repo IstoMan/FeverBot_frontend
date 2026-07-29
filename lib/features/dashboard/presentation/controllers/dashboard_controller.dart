@@ -7,16 +7,23 @@ import 'package:manifesto/common/widgets/toast_message.dart';
 import 'package:manifesto/features/dashboard/domain/entities/accept_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/chat_stream_event.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_request_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/document_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/family_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/invite_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/send_chat_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/accept_invite_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/analyze_document_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/delete_document_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/delete_member_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/download_document_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/get_document_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/get_documents_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/get_family_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/get_user_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/invite_member_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/new_chat_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/stream_chat_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/upload_document_usecase.dart';
 import 'package:manifesto/features/dashboard/presentation/states/dashboard_state.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/common/chat_message.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/common/qr_code_dialog.dart';
@@ -35,10 +42,17 @@ class DashboardController extends GetxController {
   final AcceptInviteUseCase acceptInviteUseCase;
   final DeleteMemberUseCase deleteMemberUseCase;
   final GetUserUseCase getUserUseCase;
+  final GetDocumentsUseCase getDocumentsUseCase;
+  final UploadDocumentUseCase uploadDocumentUseCase;
+  final GetDocumentUseCase getDocumentUseCase;
+  final DownloadDocumentUseCase downloadDocumentUseCase;
+  final AnalyzeDocumentUseCase analyzeDocumentUseCase;
+  final DeleteDocumentUseCase deleteDocumentUseCase;
 
   bool _chatLoaded = false;
   bool _familyLoaded = false;
   bool _userLoaded = false;
+  bool _documentsLoaded = false;
   Uint8List? _lastQrBytes;
   String? _lastQrMediaType;
   StreamSubscription<ChatStreamEvent>? _chatStreamSub;
@@ -52,6 +66,12 @@ class DashboardController extends GetxController {
     required this.acceptInviteUseCase,
     required this.deleteMemberUseCase,
     required this.getUserUseCase,
+    required this.getDocumentsUseCase,
+    required this.uploadDocumentUseCase,
+    required this.getDocumentUseCase,
+    required this.downloadDocumentUseCase,
+    required this.analyzeDocumentUseCase,
+    required this.deleteDocumentUseCase,
   });
 
   @override
@@ -78,6 +98,9 @@ class DashboardController extends GetxController {
         break;
       case 2:
         if (!_familyLoaded) getFamily();
+        break;
+      case 3:
+        if (!_documentsLoaded) getDocuments();
         break;
     }
   }
@@ -343,6 +366,196 @@ class DashboardController extends GetxController {
         return;
       }
       state.user.value = data;
+    });
+  }
+
+  Future<void> getDocuments({bool force = false}) async {
+    if (state.loadingDocuments.value) return;
+    if (_documentsLoaded && !force) return;
+
+    state.loadingDocuments.value = true;
+    final result = await getDocumentsUseCase.call();
+    result.fold((error) {
+      _documentsLoaded = false;
+      showToastNotification(
+        title: "Error",
+        body: error.toString(),
+        messageType: ToastificationType.error,
+      );
+    }, (data) {
+      _documentsLoaded = true;
+      state.documents.assignAll(data);
+    });
+    state.loadingDocuments.value = false;
+  }
+
+  Future<bool> uploadDocument({
+    required String filePath,
+    required String filename,
+    String? type,
+    bool analyze = false,
+  }) async {
+    if (state.uploadingDocument.value) return false;
+
+    state.uploadingDocument.value = true;
+    final result = await uploadDocumentUseCase.call(
+      UploadDocumentUseCaseParams(
+        request: UploadDocumentRequestEntity(
+          filePath: filePath,
+          filename: filename,
+          type: type,
+          analyze: analyze,
+        ),
+      ),
+    );
+    final success = result.fold((error) {
+      showToastNotification(
+        title: "Error",
+        body: error.toString(),
+        messageType: ToastificationType.error,
+      );
+      return false;
+    }, (data) {
+      final existingIndex =
+          state.documents.indexWhere((doc) => doc.id == data.id);
+      if (existingIndex >= 0) {
+        state.documents[existingIndex] = data;
+      } else {
+        state.documents.insert(0, data);
+      }
+      state.documents.refresh();
+      _documentsLoaded = true;
+      showToastNotification(
+        title: "Uploaded",
+        body: analyze
+            ? "Document uploaded and analyzed"
+            : "Document uploaded successfully",
+        messageType: ToastificationType.success,
+      );
+      return true;
+    });
+    state.uploadingDocument.value = false;
+    return success;
+  }
+
+  Future<DocumentEntity?> refreshDocument(String docId) async {
+    final result = await getDocumentUseCase.call(
+      GetDocumentUseCaseParams(docId: docId),
+    );
+    return result.fold((error) {
+      showToastNotification(
+        title: "Error",
+        body: error.toString(),
+        messageType: ToastificationType.error,
+      );
+      return null;
+    }, (data) {
+      final index = state.documents.indexWhere((doc) => doc.id == data.id);
+      if (index >= 0) {
+        state.documents[index] = data;
+        state.documents.refresh();
+      }
+      return data;
+    });
+  }
+
+  Future<DocumentEntity?> analyzeDocument(DocumentEntity document) async {
+    if (state.analyzingDocument.value) return null;
+
+    state.analyzingDocument.value = true;
+    state.analyzingDocId.value = document.id;
+    final result = await analyzeDocumentUseCase.call(
+      AnalyzeDocumentUseCaseParams(document: document),
+    );
+    DocumentEntity? updated;
+    result.fold((error) {
+      showToastNotification(
+        title: "Error",
+        body: error.toString(),
+        messageType: ToastificationType.error,
+      );
+    }, (data) {
+      updated = data;
+      final index = state.documents.indexWhere((doc) => doc.id == data.id);
+      if (index >= 0) {
+        state.documents[index] = data;
+      } else {
+        state.documents.insert(0, data);
+      }
+      state.documents.refresh();
+      showToastNotification(
+        title: "Analyzed",
+        body: "Document analysis is ready",
+        messageType: ToastificationType.success,
+      );
+    });
+    state.analyzingDocument.value = false;
+    state.analyzingDocId.value = null;
+    return updated;
+  }
+
+  Future<void> downloadDocument(DocumentEntity document) async {
+    if (state.downloadingDocument.value) return;
+
+    state.downloadingDocument.value = true;
+    state.downloadingDocId.value = document.id;
+    final result = await downloadDocumentUseCase.call(
+      DownloadDocumentUseCaseParams(document: document),
+    );
+    await result.fold((error) async {
+      showToastNotification(
+        title: "Error",
+        body: error.toString(),
+        messageType: ToastificationType.error,
+      );
+    }, (data) async {
+      try {
+        final tempDir = await getTemporaryDirectory();
+        final safeName = data.filename.isEmpty ? 'document' : data.filename;
+        final file = File('${tempDir.path}/$safeName');
+        await file.writeAsBytes(data.bytes, flush: true);
+        await SharePlus.instance.share(
+          ShareParams(
+            files: [
+              XFile(
+                file.path,
+                mimeType: data.contentType,
+                name: safeName,
+              ),
+            ],
+          ),
+        );
+      } catch (e) {
+        showToastNotification(
+          title: "Error",
+          body: e.toString(),
+          messageType: ToastificationType.error,
+        );
+      }
+    });
+    state.downloadingDocument.value = false;
+    state.downloadingDocId.value = null;
+  }
+
+  Future<bool> deleteDocument(String docId) async {
+    final result = await deleteDocumentUseCase.call(
+      DeleteDocumentUseCaseParams(docId: docId),
+    );
+    return result.fold((error) {
+      showToastNotification(
+        title: "Error",
+        body: error.toString(),
+        messageType: ToastificationType.error,
+      );
+      return false;
+    }, (_) {
+      state.documents.removeWhere((doc) => doc.id == docId);
+      showToastNotification(
+        title: "Deleted",
+        body: "Document deleted",
+        messageType: ToastificationType.success,
+      );
+      return true;
     });
   }
 }

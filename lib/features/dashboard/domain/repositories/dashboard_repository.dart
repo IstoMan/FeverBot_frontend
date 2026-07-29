@@ -5,6 +5,7 @@ import 'package:manifesto/features/dashboard/domain/entities/chat_stream_event.d
 import 'package:manifesto/features/dashboard/domain/entities/dashboard_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_request_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/document_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/family_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/invite_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/new_chat_entity.dart';
@@ -32,4 +33,18 @@ abstract class DashboardRepository {
       DeleteMemberRequestEntity request);
 
   ResultFuture<UserEntity> getUser();
+
+  ResultFuture<List<DocumentEntity>> getDocuments();
+
+  ResultFuture<DocumentEntity> uploadDocument(
+      UploadDocumentRequestEntity request);
+
+  ResultFuture<DocumentEntity> getDocument(String docId);
+
+  ResultFuture<DocumentDownloadEntity> downloadDocument(
+      DocumentEntity document);
+
+  ResultFuture<DocumentEntity> analyzeDocument(DocumentEntity document);
+
+  ResultVoid deleteDocument(String docId);
 }
