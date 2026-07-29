@@ -82,6 +82,47 @@ class DioClient extends RestClient {
   }
 
   @override
+  Future<List<int>> getBytes(
+    String uri, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    if (!await networkInfo.isConnected()) {
+      showToastNotification(
+        title: "oops!",
+        body: "Looks Like You are not connected to internet",
+        messageType: ToastificationType.error,
+      );
+      throw DioException(
+        requestOptions: RequestOptions(path: uri),
+        message: "No internet connection",
+        type: DioExceptionType.connectionError,
+      );
+    }
+    try {
+      final response = await _dio.get<List<int>>(
+        uri,
+        queryParameters: queryParameters,
+        options: Options(responseType: ResponseType.bytes),
+      );
+      final data = response.data;
+      if (data == null) {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          message: "Empty download response body",
+          response: response,
+          type: DioExceptionType.badResponse,
+        );
+      }
+      return data;
+    } catch (e) {
+      if (e is DioException) {
+        logError(e);
+      }
+      rethrow;
+    }
+  }
+
+  @override
   Future<dynamic> post(
     String uri, {
     dynamic data,

@@ -25,4 +25,12 @@ abstract class APIEndpoints {
   static String deleteMember(String id) => "/me/family/members/$id";
 
   static String me = "/me";
+
+  static String documents = "/documents";
+
+  static String document(String id) => "/documents/$id";
+
+  static String documentDownload(String id) => "/documents/$id/download";
+
+  static String documentAnalyze(String id) => "/documents/$id/analyze";
 }

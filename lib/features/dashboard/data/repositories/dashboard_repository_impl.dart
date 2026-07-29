@@ -17,6 +17,7 @@ import 'package:manifesto/features/dashboard/domain/entities/chat_stream_event.d
 import 'package:manifesto/features/dashboard/domain/entities/dashboard_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_request_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/document_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/family_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/invite_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/invite_request_entity.dart';
@@ -186,6 +187,110 @@ class DashboardRepositoryImpl extends DashboardRepository {
       Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
       final cached = await localDataSource.getCachedUser();
       if (cached != null) return Right(cached.toEntity());
+      return Left(APIException(message: e.toString(), statusCode: -1));
+    }
+  }
+
+  @override
+  ResultFuture<List<DocumentEntity>> getDocuments() async {
+    try {
+      final models = await remoteDataSource.getDocuments();
+      return Right(models.map((m) => m.toEntity()).toList());
+    } on APIException catch (e) {
+      Log.error("API Exception: ${e.message}");
+      return Left(APIException(message: e.message, statusCode: e.statusCode));
+    } on StorageException catch (e) {
+      Log.error("Storage Exception: ${e.message}");
+      return Left(StorageException(message: e.message));
+    } catch (e, stackTrace) {
+      Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
+      return Left(APIException(message: e.toString(), statusCode: -1));
+    }
+  }
+
+  @override
+  ResultFuture<DocumentEntity> uploadDocument(
+      UploadDocumentRequestEntity request) async {
+    try {
+      final model = await remoteDataSource.uploadDocument(request);
+      return Right(model.toEntity());
+    } on APIException catch (e) {
+      Log.error("API Exception: ${e.message}");
+      return Left(APIException(message: e.message, statusCode: e.statusCode));
+    } on StorageException catch (e) {
+      Log.error("Storage Exception: ${e.message}");
+      return Left(StorageException(message: e.message));
+    } catch (e, stackTrace) {
+      Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
+      return Left(APIException(message: e.toString(), statusCode: -1));
+    }
+  }
+
+  @override
+  ResultFuture<DocumentEntity> getDocument(String docId) async {
+    try {
+      final model = await remoteDataSource.getDocument(docId);
+      return Right(model.toEntity());
+    } on APIException catch (e) {
+      Log.error("API Exception: ${e.message}");
+      return Left(APIException(message: e.message, statusCode: e.statusCode));
+    } on StorageException catch (e) {
+      Log.error("Storage Exception: ${e.message}");
+      return Left(StorageException(message: e.message));
+    } catch (e, stackTrace) {
+      Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
+      return Left(APIException(message: e.toString(), statusCode: -1));
+    }
+  }
+
+  @override
+  ResultFuture<DocumentDownloadEntity> downloadDocument(
+      DocumentEntity document) async {
+    try {
+      final download = await remoteDataSource.downloadDocument(document);
+      return Right(download);
+    } on APIException catch (e) {
+      Log.error("API Exception: ${e.message}");
+      return Left(APIException(message: e.message, statusCode: e.statusCode));
+    } on StorageException catch (e) {
+      Log.error("Storage Exception: ${e.message}");
+      return Left(StorageException(message: e.message));
+    } catch (e, stackTrace) {
+      Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
+      return Left(APIException(message: e.toString(), statusCode: -1));
+    }
+  }
+
+  @override
+  ResultFuture<DocumentEntity> analyzeDocument(DocumentEntity document) async {
+    try {
+      final model = await remoteDataSource.analyzeDocument(document);
+      return Right(model.toEntity());
+    } on APIException catch (e) {
+      Log.error("API Exception: ${e.message}");
+      return Left(APIException(message: e.message, statusCode: e.statusCode));
+    } on StorageException catch (e) {
+      Log.error("Storage Exception: ${e.message}");
+      return Left(StorageException(message: e.message));
+    } catch (e, stackTrace) {
+      Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
+      return Left(APIException(message: e.toString(), statusCode: -1));
+    }
+  }
+
+  @override
+  ResultVoid deleteDocument(String docId) async {
+    try {
+      await remoteDataSource.deleteDocument(docId);
+      return const Right(null);
+    } on APIException catch (e) {
+      Log.error("API Exception: ${e.message}");
+      return Left(APIException(message: e.message, statusCode: e.statusCode));
+    } on StorageException catch (e) {
+      Log.error("Storage Exception: ${e.message}");
+      return Left(StorageException(message: e.message));
+    } catch (e, stackTrace) {
+      Log.error("Unexpected error in DashboardRepositoryImpl", e, stackTrace);
       return Left(APIException(message: e.toString(), statusCode: -1));
     }
   }

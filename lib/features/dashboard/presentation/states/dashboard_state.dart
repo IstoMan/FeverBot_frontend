@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:manifesto/features/dashboard/domain/entities/chat_history_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/dashboard_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/document_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/family_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/user_entity.dart';
 
@@ -21,4 +22,12 @@ class DashboardState extends GetXState {
   Rxn<FamilyEntity> family = Rxn<FamilyEntity>();
   RxList<ChatHistoryEntity> chatHistory = <ChatHistoryEntity>[].obs;
   Rxn<UserEntity> user = Rxn<UserEntity>();
+
+  RxList<DocumentEntity> documents = <DocumentEntity>[].obs;
+  RxBool loadingDocuments = false.obs;
+  RxBool uploadingDocument = false.obs;
+  RxBool analyzingDocument = false.obs;
+  RxBool downloadingDocument = false.obs;
+  RxnString analyzingDocId = RxnString();
+  RxnString downloadingDocId = RxnString();
 }

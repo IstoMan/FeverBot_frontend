@@ -9,6 +9,7 @@ import 'package:manifesto/features/dashboard/data/models/chat_history_model.dart
 import 'package:manifesto/features/dashboard/data/models/dashboard_model.dart';
 import 'package:manifesto/features/dashboard/data/models/delete_member_model.dart';
 import 'package:manifesto/features/dashboard/data/models/delete_member_request_model.dart';
+import 'package:manifesto/features/dashboard/data/models/document_model.dart';
 import 'package:manifesto/features/dashboard/data/models/family_model.dart';
 import 'package:manifesto/features/dashboard/data/models/invite_model.dart';
 import 'package:manifesto/features/dashboard/data/models/invite_request_model.dart';
@@ -17,6 +18,7 @@ import 'package:manifesto/features/dashboard/data/models/user_model.dart';
 import 'package:manifesto/features/dashboard/domain/entities/accept_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/chat_stream_event.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_request_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/document_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/invite_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/send_chat_request_entity.dart';
 
@@ -38,6 +40,18 @@ abstract class DashboardRemoteDataSource {
   Future<DeleteMemberModel> deleteMember(DeleteMemberRequestEntity request);
 
   Future<UserModel> getUser();
+
+  Future<List<DocumentModel>> getDocuments();
+
+  Future<DocumentModel> uploadDocument(UploadDocumentRequestEntity request);
+
+  Future<DocumentModel> getDocument(String docId);
+
+  Future<DocumentDownloadEntity> downloadDocument(DocumentEntity document);
+
+  Future<DocumentModel> analyzeDocument(DocumentEntity document);
+
+  Future<void> deleteDocument(String docId);
 }
 
 class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
@@ -49,6 +63,41 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
     SseChatParser sseParser = const SseChatParser(),
   }) : _sseParser = sseParser;
 
+  String _dioMessage(DioException dioError) {
+    final data = dioError.response?.data;
+    if (data is Map) {
+      return data["detail"]?.toString() ??
+          data["details"]?.toString() ??
+          dioError.message ??
+          "Unknown error";
+    }
+    return dioError.message ?? "Unknown error";
+  }
+
+  Never _throwDio(String action, DioException dioError, StackTrace stackTrace) {
+    Log.warning(
+      "DioException while $action",
+      dioError,
+      stackTrace,
+    );
+    throw APIException(
+      message: _dioMessage(dioError),
+      statusCode: dioError.response?.statusCode ?? -1,
+    );
+  }
+
+  Never _throwUnexpected(String action, Object e, StackTrace stackTrace) {
+    Log.warning(
+      "Unexpected error while $action",
+      e,
+      stackTrace,
+    );
+    throw APIException(
+      message: e.toString(),
+      statusCode: -1,
+    );
+  }
+
   @override
   Future<DashboardModel> fetchDashboardData() async {
     try {
@@ -57,29 +106,9 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
       );
       return DashboardModel.fromJson(response);
     } on DioException catch (dioError, stackTrace) {
-      Log.warning(
-        "DioException while fetching dashboard data",
-        dioError,
-        stackTrace,
-      );
-
-      final statusCode = dioError.response?.statusCode ?? -1;
-      final message = dioError.response?.data is Map
-          ? dioError.response?.data["details"]?.toString() ?? dioError.message
-          : dioError.message ?? "Unknown error";
-
-      throw APIException(message: message!, statusCode: statusCode);
+      _throwDio("fetching dashboard data", dioError, stackTrace);
     } catch (e, stackTrace) {
-      Log.warning(
-        "Unexpected error while fetching dashboard data",
-        e,
-        stackTrace,
-      );
-
-      throw APIException(
-        message: e.toString(),
-        statusCode: -1,
-      );
+      _throwUnexpected("fetching dashboard data", e, stackTrace);
     }
   }
 
@@ -91,32 +120,9 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
       );
       return NewChatModel.fromJson(response);
     } on DioException catch (dioError, stackTrace) {
-      Log.warning(
-        "DioException while fetching new chat",
-        dioError,
-        stackTrace,
-      );
-
-      final statusCode = dioError.response?.statusCode ?? -1;
-      final data = dioError.response?.data;
-      final message = data is Map
-          ? data["detail"]?.toString() ??
-              data["details"]?.toString() ??
-              dioError.message
-          : dioError.message ?? "Unknown error";
-
-      throw APIException(message: message!, statusCode: statusCode);
+      _throwDio("fetching new chat", dioError, stackTrace);
     } catch (e, stackTrace) {
-      Log.warning(
-        "Unexpected error while creating new chat",
-        e,
-        stackTrace,
-      );
-
-      throw APIException(
-        message: e.toString(),
-        statusCode: -1,
-      );
+      _throwUnexpected("creating new chat", e, stackTrace);
     }
   }
 
@@ -168,32 +174,9 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
         // API uses 404 when the user is not in any family group.
         return FamilyModel(groupId: '', ownerId: '', members: const []);
       }
-
-      Log.warning(
-        "DioException while getting family",
-        dioError,
-        stackTrace,
-      );
-
-      final data = dioError.response?.data;
-      final message = data is Map
-          ? data["detail"]?.toString() ??
-              data["details"]?.toString() ??
-              dioError.message
-          : dioError.message ?? "Unknown error";
-
-      throw APIException(message: message!, statusCode: statusCode);
+      _throwDio("getting family", dioError, stackTrace);
     } catch (e, stackTrace) {
-      Log.warning(
-        "Unexpected error while getting family",
-        e,
-        stackTrace,
-      );
-
-      throw APIException(
-        message: e.toString(),
-        statusCode: -1,
-      );
+      _throwUnexpected("getting family", e, stackTrace);
     }
   }
 
@@ -207,29 +190,9 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
       );
       return InviteModel.fromJson(response);
     } on DioException catch (dioError, stackTrace) {
-      Log.warning(
-        "DioException while inviting member",
-        dioError,
-        stackTrace,
-      );
-
-      final statusCode = dioError.response?.statusCode ?? -1;
-      final message = dioError.response?.data is Map
-          ? dioError.response?.data["details"]?.toString() ?? dioError.message
-          : dioError.message ?? "Unknown error";
-
-      throw APIException(message: message!, statusCode: statusCode);
+      _throwDio("inviting member", dioError, stackTrace);
     } catch (e, stackTrace) {
-      Log.warning(
-        "Unexpected error while inviting member",
-        e,
-        stackTrace,
-      );
-
-      throw APIException(
-        message: e.toString(),
-        statusCode: -1,
-      );
+      _throwUnexpected("inviting member", e, stackTrace);
     }
   }
 
@@ -243,29 +206,9 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
           .map((m) => ChatHistoryModel.fromJson(m as Map<String, dynamic>))
           .toList();
     } on DioException catch (dioError, stackTrace) {
-      Log.warning(
-        "DioException while fetching chats",
-        dioError,
-        stackTrace,
-      );
-
-      final statusCode = dioError.response?.statusCode ?? -1;
-      final message = dioError.response?.data is Map
-          ? dioError.response?.data["details"]?.toString() ?? dioError.message
-          : dioError.message ?? "Unknown error";
-
-      throw APIException(message: message!, statusCode: statusCode);
+      _throwDio("fetching chats", dioError, stackTrace);
     } catch (e, stackTrace) {
-      Log.warning(
-        "Unexpected error while fetching chats",
-        e,
-        stackTrace,
-      );
-
-      throw APIException(
-        message: e.toString(),
-        statusCode: -1,
-      );
+      _throwUnexpected("fetching chats", e, stackTrace);
     }
   }
 
@@ -281,29 +224,9 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
         response['family'],
       );
     } on DioException catch (dioError, stackTrace) {
-      Log.warning(
-        "DioException while accepting invite",
-        dioError,
-        stackTrace,
-      );
-
-      final statusCode = dioError.response?.statusCode ?? -1;
-      final message = dioError.response?.data is Map
-          ? dioError.response?.data["detail"]?.toString() ?? dioError.message
-          : dioError.message ?? "Unknown error";
-
-      throw APIException(message: message!, statusCode: statusCode);
+      _throwDio("accepting invite", dioError, stackTrace);
     } catch (e, stackTrace) {
-      Log.warning(
-        "Unexpected error while accepting invite",
-        e,
-        stackTrace,
-      );
-
-      throw APIException(
-        message: e.toString(),
-        statusCode: -1,
-      );
+      _throwUnexpected("accepting invite", e, stackTrace);
     }
   }
 
@@ -319,29 +242,9 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
       );
       return DeleteMemberModel.fromJson(response);
     } on DioException catch (dioError, stackTrace) {
-      Log.warning(
-        "DioException while deleting member",
-        dioError,
-        stackTrace,
-      );
-
-      final statusCode = dioError.response?.statusCode ?? -1;
-      final message = dioError.response?.data is Map
-          ? dioError.response?.data["detail"]?.toString() ?? dioError.message
-          : dioError.message ?? "Unknown error";
-
-      throw APIException(message: message!, statusCode: statusCode);
+      _throwDio("deleting member", dioError, stackTrace);
     } catch (e, stackTrace) {
-      Log.warning(
-        "Unexpected error while deleting member",
-        e,
-        stackTrace,
-      );
-
-      throw APIException(
-        message: e.toString(),
-        statusCode: -1,
-      );
+      _throwUnexpected("deleting member", e, stackTrace);
     }
   }
 
@@ -353,29 +256,125 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
       );
       return UserModel.fromJson(response);
     } on DioException catch (dioError, stackTrace) {
-      Log.warning(
-        "DioException while getting user",
-        dioError,
-        stackTrace,
-      );
-
-      final statusCode = dioError.response?.statusCode ?? -1;
-      final message = dioError.response?.data is Map
-          ? dioError.response?.data["detail"]?.toString() ?? dioError.message
-          : dioError.message ?? "Unknown error";
-
-      throw APIException(message: message!, statusCode: statusCode);
+      _throwDio("getting user", dioError, stackTrace);
     } catch (e, stackTrace) {
-      Log.warning(
-        "Unexpected error while getting user",
-        e,
-        stackTrace,
-      );
+      _throwUnexpected("getting user", e, stackTrace);
+    }
+  }
 
+  @override
+  Future<List<DocumentModel>> getDocuments() async {
+    try {
+      final response = await _restClient.get(
+        APIEndpoints.documents,
+      );
+      return (response as List<dynamic>? ?? [])
+          .map((m) => DocumentModel.fromJson(m as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (dioError, stackTrace) {
+      _throwDio("fetching documents", dioError, stackTrace);
+    } catch (e, stackTrace) {
+      _throwUnexpected("fetching documents", e, stackTrace);
+    }
+  }
+
+  @override
+  Future<DocumentModel> uploadDocument(
+      UploadDocumentRequestEntity request) async {
+    try {
+      final formMap = <String, dynamic>{
+        'file': await MultipartFile.fromFile(
+          request.filePath,
+          filename: request.filename,
+        ),
+        'analyze': request.analyze.toString(),
+      };
+      if (request.type != null && request.type!.isNotEmpty) {
+        formMap['type'] = request.type;
+      }
+      final response = await _restClient.upload(
+        APIEndpoints.documents,
+        formData: FormData.fromMap(formMap),
+      );
+      if (response is Map<String, dynamic>) {
+        return DocumentModel.fromJson(response);
+      }
+      if (response is Map) {
+        return DocumentModel.fromJson(Map<String, dynamic>.from(response));
+      }
       throw APIException(
-        message: e.toString(),
+        message: "Unexpected upload response",
         statusCode: -1,
       );
+    } on APIException {
+      rethrow;
+    } on DioException catch (dioError, stackTrace) {
+      _throwDio("uploading document", dioError, stackTrace);
+    } catch (e, stackTrace) {
+      _throwUnexpected("uploading document", e, stackTrace);
+    }
+  }
+
+  @override
+  Future<DocumentModel> getDocument(String docId) async {
+    try {
+      final response = await _restClient.get(
+        APIEndpoints.document(docId),
+      );
+      return DocumentModel.fromJson(response as Map<String, dynamic>);
+    } on DioException catch (dioError, stackTrace) {
+      _throwDio("fetching document", dioError, stackTrace);
+    } catch (e, stackTrace) {
+      _throwUnexpected("fetching document", e, stackTrace);
+    }
+  }
+
+  @override
+  Future<DocumentDownloadEntity> downloadDocument(
+      DocumentEntity document) async {
+    try {
+      final bytes = await _restClient.getBytes(
+        APIEndpoints.documentDownload(document.id),
+      );
+      return DocumentDownloadEntity(
+        filename: document.filename,
+        bytes: bytes,
+        contentType: document.contentType.isEmpty ? null : document.contentType,
+      );
+    } on DioException catch (dioError, stackTrace) {
+      _throwDio("downloading document", dioError, stackTrace);
+    } catch (e, stackTrace) {
+      _throwUnexpected("downloading document", e, stackTrace);
+    }
+  }
+
+  @override
+  Future<DocumentModel> analyzeDocument(DocumentEntity document) async {
+    try {
+      final response = await _restClient.post(
+        APIEndpoints.documentAnalyze(document.id),
+      );
+      final map = response is Map<String, dynamic>
+          ? response
+          : Map<String, dynamic>.from(response as Map);
+      return DocumentModel.fromAnalyzeJson(map, existing: document);
+    } on DioException catch (dioError, stackTrace) {
+      _throwDio("analyzing document", dioError, stackTrace);
+    } catch (e, stackTrace) {
+      _throwUnexpected("analyzing document", e, stackTrace);
+    }
+  }
+
+  @override
+  Future<void> deleteDocument(String docId) async {
+    try {
+      await _restClient.delete(
+        APIEndpoints.document(docId),
+      );
+    } on DioException catch (dioError, stackTrace) {
+      _throwDio("deleting document", dioError, stackTrace);
+    } catch (e, stackTrace) {
+      _throwUnexpected("deleting document", e, stackTrace);
     }
   }
 }

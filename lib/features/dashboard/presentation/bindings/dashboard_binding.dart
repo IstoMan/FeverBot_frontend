@@ -4,12 +4,18 @@ import 'package:manifesto/features/dashboard/data/datasources/remote/dashboard_r
 import 'package:manifesto/features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import 'package:manifesto/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/accept_invite_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/analyze_document_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/delete_document_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/delete_member_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/download_document_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/get_document_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/get_documents_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/get_family_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/get_user_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/invite_member_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/new_chat_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/stream_chat_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/upload_document_usecase.dart';
 import 'package:manifesto/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:manifesto/features/dashboard/presentation/states/dashboard_state.dart';
 
@@ -63,6 +69,36 @@ class DashboardBinding extends Bindings {
         repository: Get.find(),
       ),
     );
+    Get.lazyPut(
+      () => GetDocumentsUseCase(
+        repository: Get.find(),
+      ),
+    );
+    Get.lazyPut(
+      () => UploadDocumentUseCase(
+        repository: Get.find(),
+      ),
+    );
+    Get.lazyPut(
+      () => GetDocumentUseCase(
+        repository: Get.find(),
+      ),
+    );
+    Get.lazyPut(
+      () => DownloadDocumentUseCase(
+        repository: Get.find(),
+      ),
+    );
+    Get.lazyPut(
+      () => AnalyzeDocumentUseCase(
+        repository: Get.find(),
+      ),
+    );
+    Get.lazyPut(
+      () => DeleteDocumentUseCase(
+        repository: Get.find(),
+      ),
+    );
     Get.lazyPut<DashboardState>(() => DashboardState());
     Get.lazyPut<DashboardController>(
       () => DashboardController(
@@ -74,6 +110,12 @@ class DashboardBinding extends Bindings {
         acceptInviteUseCase: Get.find(),
         deleteMemberUseCase: Get.find(),
         getUserUseCase: Get.find(),
+        getDocumentsUseCase: Get.find(),
+        uploadDocumentUseCase: Get.find(),
+        getDocumentUseCase: Get.find(),
+        downloadDocumentUseCase: Get.find(),
+        analyzeDocumentUseCase: Get.find(),
+        deleteDocumentUseCase: Get.find(),
       ),
     );
   }
