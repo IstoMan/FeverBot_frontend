@@ -20,6 +20,7 @@ import 'package:manifesto/features/dashboard/domain/usecases/stream_chat_usecase
 import 'package:manifesto/features/dashboard/presentation/states/dashboard_state.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/common/chat_message.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/common/qr_code_dialog.dart';
+import 'package:manifesto/routes/app_routes.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -337,6 +338,10 @@ class DashboardController extends GetxController {
         messageType: ToastificationType.error,
       );
     }, (data) {
+      if (!data.onboardingComplete) {
+        Get.offAllNamed(AppRoutes.onboarding);
+        return;
+      }
       state.user.value = data;
     });
   }

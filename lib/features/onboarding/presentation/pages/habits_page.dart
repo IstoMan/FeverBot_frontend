@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/Get.dart';
+import 'package:get/get.dart';
 import 'package:manifesto/common/resources/app_resources/app_strings.dart';
 import 'package:manifesto/features/onboarding/presentation/controllers/onboarding_controller.dart';
 import 'package:manifesto/features/onboarding/presentation/widgets/habits_container.dart';

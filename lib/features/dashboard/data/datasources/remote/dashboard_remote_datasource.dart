@@ -98,8 +98,11 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
       );
 
       final statusCode = dioError.response?.statusCode ?? -1;
-      final message = dioError.response?.data is Map
-          ? dioError.response?.data["details"]?.toString() ?? dioError.message
+      final data = dioError.response?.data;
+      final message = data is Map
+          ? data["detail"]?.toString() ??
+              data["details"]?.toString() ??
+              dioError.message
           : dioError.message ?? "Unknown error";
 
       throw APIException(message: message!, statusCode: statusCode);
@@ -160,15 +163,23 @@ class DashboardRemoteDataSourceImpl extends DashboardRemoteDataSource {
       );
       return FamilyModel.fromJson(response);
     } on DioException catch (dioError, stackTrace) {
+      final statusCode = dioError.response?.statusCode ?? -1;
+      if (statusCode == 404) {
+        // API uses 404 when the user is not in any family group.
+        return FamilyModel(groupId: '', ownerId: '', members: const []);
+      }
+
       Log.warning(
         "DioException while getting family",
         dioError,
         stackTrace,
       );
 
-      final statusCode = dioError.response?.statusCode ?? -1;
-      final message = dioError.response?.data is Map
-          ? dioError.response?.data["details"]?.toString() ?? dioError.message
+      final data = dioError.response?.data;
+      final message = data is Map
+          ? data["detail"]?.toString() ??
+              data["details"]?.toString() ??
+              dioError.message
           : dioError.message ?? "Unknown error";
 
       throw APIException(message: message!, statusCode: statusCode);

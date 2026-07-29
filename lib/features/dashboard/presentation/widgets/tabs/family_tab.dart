@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/Get.dart';
+import 'package:get/get.dart';
 import 'package:manifesto/common/resources/app_resources/app_sizes.dart';
 import 'package:manifesto/features/dashboard/presentation/controllers/dashboard_controller.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/common/family_member.dart';
@@ -62,22 +62,27 @@ class FamilyTab extends GetView<DashboardController> {
               ),
             ),
             Obx(
-              () => controller.state.family.value == null
-                  ? Column(
-                      children: [
-                        AppGaps.h25,
-                        SizedBox(
-                          width: double.infinity,
-                          child: RElevatedButton(
-                            isLoading: controller.state.invitingMember.value,
-                            onPressed: () =>
-                                ScanQeDialog.show(onDetect: controller.scanQR),
-                            label: 'Scan',
+              () {
+                final family = controller.state.family.value;
+                final hasGroup =
+                    family != null && family.groupId.isNotEmpty;
+                return hasGroup
+                    ? const SizedBox.shrink()
+                    : Column(
+                        children: [
+                          AppGaps.h25,
+                          SizedBox(
+                            width: double.infinity,
+                            child: RElevatedButton(
+                              isLoading: controller.state.invitingMember.value,
+                              onPressed: () => ScanQeDialog.show(
+                                  onDetect: controller.scanQR),
+                              label: 'Scan',
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                  : const SizedBox.shrink(),
+                        ],
+                      );
+              },
             ),
             AppGaps.h30,
             Obx(

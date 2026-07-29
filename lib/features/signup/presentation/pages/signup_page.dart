@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/Get.dart';
+import 'package:get/get.dart';
 import 'package:manifesto/common/resources/app_resources/app_strings.dart';
 import 'package:manifesto/common/widgets/text_field.dart';
 import 'package:manifesto/features/signup/presentation/controllers/signup_controller.dart';

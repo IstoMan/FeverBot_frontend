@@ -24,24 +24,26 @@ class UserModel extends UserEntity {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      uid: json['uid'] as String,
-      displayName: json['display_name'] as String,
-      age: (json['age'] as num).toInt(),
-      heightCm: (json['height_cm'] as num).toDouble(),
-      weightKg: (json['weight_kg'] as num).toDouble(),
-      gender: json['gender'] as String,
-      cholesterol: (json['cholesterol'] as num).toInt(),
-      glucOrdinal: (json['gluc_ordinal'] as num).toInt(),
-      smokes: json['smokes'] as bool,
-      drinksAlcohol: json['drinks_alcohol'] as bool,
-      physicallyActive: json['physically_active'] as bool,
-      bloodPressureSystolic: (json['blood_pressure_systolic'] as num).toInt(),
-      bloodPressureDiastolic: (json['blood_pressure_diastolic'] as num).toInt(),
-      bmi: (json['bmi'] as num).toDouble(),
-      riskScore: (json['risk_score'] as num).toDouble(),
-      riskClass: json['risk_class'] as String,
-      onboardingComplete: json['onboarding_complete'] as bool,
-      updatedAt: json['updated_at'] as String,
+      uid: json['uid'] as String? ?? '',
+      displayName: json['display_name'] as String? ?? '',
+      age: (json['age'] as num?)?.toInt() ?? 0,
+      heightCm: (json['height_cm'] as num?)?.toDouble() ?? 0,
+      weightKg: (json['weight_kg'] as num?)?.toDouble() ?? 0,
+      gender: json['gender'] as String? ?? '',
+      cholesterol: (json['cholesterol'] as num?)?.toInt() ?? 0,
+      glucOrdinal: (json['gluc_ordinal'] as num?)?.toInt() ?? 0,
+      smokes: json['smokes'] as bool? ?? false,
+      drinksAlcohol: json['drinks_alcohol'] as bool? ?? false,
+      physicallyActive: json['physically_active'] as bool? ?? false,
+      bloodPressureSystolic:
+          (json['blood_pressure_systolic'] as num?)?.toInt() ?? 0,
+      bloodPressureDiastolic:
+          (json['blood_pressure_diastolic'] as num?)?.toInt() ?? 0,
+      bmi: (json['bmi'] as num?)?.toDouble() ?? 0,
+      riskScore: (json['risk_score'] as num?)?.toDouble() ?? 0,
+      riskClass: json['risk_class'] as String? ?? '',
+      onboardingComplete: json['onboarding_complete'] as bool? ?? false,
+      updatedAt: json['updated_at'] as String? ?? '',
     );
   }
 

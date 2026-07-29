@@ -26,17 +26,23 @@ class OnboardingModel extends OnboardingEntity {
     return OnboardingModel(
       uid: json['uid'] as String? ?? '',
       displayName: json['display_name'] as String? ?? '',
-      age: json['age'] as int? ?? 0,
+      age: (json['age'] as num?)?.toInt() ?? 0,
       heightCm: (json['height_cm'] as num?)?.toDouble() ?? 0.0,
       weightKg: (json['weight_kg'] as num?)?.toDouble() ?? 0.0,
       gender: json['gender'] as String? ?? '',
-      cholesterol: json['cholesterol'] as int? ?? 0,
-      glucOrdinal: json['gluc_ordinal'] as int? ?? 0,
+      cholesterol: (json['cholesterol'] as num?)?.toInt() ??
+          (json['cholesterol_mg_dl'] as num?)?.toInt() ??
+          0,
+      glucOrdinal: (json['gluc_ordinal'] as num?)?.toInt() ??
+          (json['glucose_mg_dl'] as num?)?.toInt() ??
+          0,
       smokes: json['smokes'] as bool? ?? false,
       drinksAlcohol: json['drinks_alcohol'] as bool? ?? false,
       physicallyActive: json['physically_active'] as bool? ?? false,
-      bloodPressureSystolic: json['blood_pressure_systolic'] as int? ?? 0,
-      bloodPressureDiastolic: json['blood_pressure_diastolic'] as int? ?? 0,
+      bloodPressureSystolic:
+          (json['blood_pressure_systolic'] as num?)?.toInt() ?? 0,
+      bloodPressureDiastolic:
+          (json['blood_pressure_diastolic'] as num?)?.toInt() ?? 0,
       bmi: (json['bmi'] as num?)?.toDouble() ?? 0.0,
       riskScore: (json['risk_score'] as num?)?.toDouble() ?? 0.0,
       riskClass: json['risk_class'] as String? ?? 'low',

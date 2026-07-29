@@ -77,7 +77,9 @@ class DashboardRepositoryImpl extends DashboardRepository {
   ResultFuture<FamilyEntity> getFamily() async {
     try {
       final FamilyModel model = await remoteDataSource.getFamily();
-      await localDataSource.cacheFamily(model);
+      if (model.groupId.isNotEmpty) {
+        await localDataSource.cacheFamily(model);
+      }
       return Right(model.toEntity());
     } on APIException catch (e) {
       Log.error("API Exception: ${e.message}");

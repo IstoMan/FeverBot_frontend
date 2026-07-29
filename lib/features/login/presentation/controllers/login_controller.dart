@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:manifesto/common/widgets/toast_message.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/get_user_usecase.dart';
 import 'package:manifesto/features/login/domain/entities/login_request_entity.dart';
 import 'package:manifesto/features/login/domain/usecases/login_usecase.dart';
 import 'package:manifesto/features/login/presentation/states/login_state.dart';
@@ -9,8 +10,13 @@ import 'package:toastification/toastification.dart';
 class LoginController extends GetxController {
   final LoginState state;
   final GetLoginUseCase getLoginUseCase;
+  final GetUserUseCase getUserUseCase;
 
-  LoginController({required this.getLoginUseCase, required this.state});
+  LoginController({
+    required this.getLoginUseCase,
+    required this.getUserUseCase,
+    required this.state,
+  });
 
   @override
   void onClose() {
@@ -29,15 +35,35 @@ class LoginController extends GetxController {
         ),
       ),
     );
-    result.fold((error) {
+
+    if (result.isLeft()) {
       showToastNotification(
         title: "Error",
-        body: error.toString(),
+        body: result.fold((error) => error.toString(), (_) => ''),
         messageType: ToastificationType.error,
       );
-    }, (data) {
-      Get.offAllNamed(AppRoutes.dashboard);
-    });
+      state.isLoading.value = false;
+      return;
+    }
+
+    final userResult = await getUserUseCase.call();
+    userResult.fold(
+      (error) {
+        showToastNotification(
+          title: "Error",
+          body: error.toString(),
+          messageType: ToastificationType.error,
+        );
+        Get.offAllNamed(AppRoutes.dashboard);
+      },
+      (user) {
+        Get.offAllNamed(
+          user.onboardingComplete
+              ? AppRoutes.dashboard
+              : AppRoutes.onboarding,
+        );
+      },
+    );
     state.isLoading.value = false;
   }
 }
