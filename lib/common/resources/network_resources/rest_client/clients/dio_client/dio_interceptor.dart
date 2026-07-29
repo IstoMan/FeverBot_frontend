@@ -13,14 +13,32 @@ class DioInterceptor extends Interceptor {
   @override
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    options.headers.clear();
+    final existingContentType = options.headers['content-type'] ??
+        options.headers['Content-Type'] ??
+        options.contentType;
+    final existingAccept =
+        options.headers['accept'] ?? options.headers['Accept'];
 
-    options.headers.addAll({
-      "content-type": "application/json",
-      "Authorization": "Bearer ${await LocalClient.getString(
-        key: LocalKeys.accessToken,
-      )}",
-    });
+    options.headers.remove('Authorization');
+    options.headers.remove('authorization');
+
+    options.headers['Authorization'] =
+        "Bearer ${await LocalClient.getString(key: LocalKeys.accessToken)}";
+
+    if (existingAccept != null) {
+      options.headers['Accept'] = existingAccept;
+    }
+
+    final isFormData = options.data is FormData;
+    if (!isFormData &&
+        (existingContentType == null ||
+            existingContentType.toString().isEmpty)) {
+      options.headers['content-type'] = 'application/json';
+      options.contentType = 'application/json';
+    } else if (existingContentType != null) {
+      options.headers['content-type'] = existingContentType;
+    }
+
     client.logRequest(options);
     super.onRequest(options, handler);
   }

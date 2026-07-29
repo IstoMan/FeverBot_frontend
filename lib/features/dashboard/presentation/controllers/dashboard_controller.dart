@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:get/get.dart';
 import 'package:manifesto/common/widgets/toast_message.dart';
 import 'package:manifesto/features/dashboard/domain/entities/accept_request_entity.dart';
+import 'package:manifesto/features/dashboard/domain/entities/chat_stream_event.dart';
 import 'package:manifesto/features/dashboard/domain/entities/delete_member_request_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/family_entity.dart';
 import 'package:manifesto/features/dashboard/domain/entities/invite_request_entity.dart';
@@ -14,7 +16,7 @@ import 'package:manifesto/features/dashboard/domain/usecases/get_family_usecase.
 import 'package:manifesto/features/dashboard/domain/usecases/get_user_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/invite_member_usecase.dart';
 import 'package:manifesto/features/dashboard/domain/usecases/new_chat_usecase.dart';
-import 'package:manifesto/features/dashboard/domain/usecases/send_chat_usecase.dart';
+import 'package:manifesto/features/dashboard/domain/usecases/stream_chat_usecase.dart';
 import 'package:manifesto/features/dashboard/presentation/states/dashboard_state.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/common/chat_message.dart';
 import 'package:manifesto/features/dashboard/presentation/widgets/common/qr_code_dialog.dart';
@@ -26,7 +28,7 @@ import 'package:toastification/toastification.dart';
 class DashboardController extends GetxController {
   final DashboardState state;
   final NewChatUseCase newChatUseCase;
-  final SendChatUseCase sendChatUseCase;
+  final StreamChatUseCase streamChatUseCase;
   final GetFamilyUseCase getFamilyUseCase;
   final InviteMemberUseCase inviteMemberUseCase;
   final AcceptInviteUseCase acceptInviteUseCase;
@@ -38,11 +40,12 @@ class DashboardController extends GetxController {
   bool _userLoaded = false;
   Uint8List? _lastQrBytes;
   String? _lastQrMediaType;
+  StreamSubscription<ChatStreamEvent>? _chatStreamSub;
 
   DashboardController({
     required this.state,
     required this.newChatUseCase,
-    required this.sendChatUseCase,
+    required this.streamChatUseCase,
     required this.getFamilyUseCase,
     required this.inviteMemberUseCase,
     required this.acceptInviteUseCase,
@@ -58,6 +61,7 @@ class DashboardController extends GetxController {
 
   @override
   void onClose() {
+    _chatStreamSub?.cancel();
     state.chatController.dispose();
     super.onClose();
   }
@@ -154,6 +158,8 @@ class DashboardController extends GetxController {
   }
 
   Future<void> sendChat() async {
+    if (state.chatting.value) return;
+
     if (state.chatId == null) {
       showToastNotification(
         title: "Please Wait",
@@ -162,7 +168,7 @@ class DashboardController extends GetxController {
       );
       return;
     }
-    String message = state.chatController.text;
+    final message = state.chatController.text;
     if (message == "") {
       showToastNotification(
         title: "Oops",
@@ -171,37 +177,83 @@ class DashboardController extends GetxController {
       );
       return;
     }
+
+    await _chatStreamSub?.cancel();
+
     state.chatMessages.add(
       ChatMessage(
         text: message,
         isUser: true,
       ),
     );
+
+    final botMessage = ChatMessage(
+      text: '',
+      isUser: false,
+      animateEntrance: true,
+    );
+    state.chatMessages.add(botMessage);
+    final botIndex = state.chatMessages.length - 1;
+
     state.chatting.value = true;
     state.chatController.clear();
-    final result = await sendChatUseCase.call(
-      SendChatUseCaseParams(
-        request: SendChatRequestEntity(
-          chatId: state.chatId!,
-          message: message,
-        ),
-      ),
+
+    _chatStreamSub = streamChatUseCase
+        .call(
+          StreamChatUseCaseParams(
+            request: SendChatRequestEntity(
+              chatId: state.chatId!,
+              message: message,
+            ),
+          ),
+        )
+        .listen(
+      (event) {
+        switch (event) {
+          case ChatStreamToken(:final text):
+            if (text.isEmpty) return;
+            final current = state.chatMessages[botIndex];
+            current.text = '${current.text}$text';
+            current.animateEntrance = false;
+            state.chatMessages.refresh();
+          case ChatStreamError(:final message):
+            showToastNotification(
+              title: "Error",
+              body: message,
+              messageType: ToastificationType.error,
+            );
+            if (state.chatMessages[botIndex].text.isEmpty) {
+              state.chatMessages[botIndex].text =
+                  "Sorry, I couldn't complete that reply.";
+              state.chatMessages.refresh();
+            }
+            state.chatting.value = false;
+          case ChatStreamMessageEnd():
+            state.chatting.value = false;
+          case ChatStreamMessageStart():
+          case ChatStreamIgnored():
+            break;
+        }
+      },
+      onError: (Object error) {
+        showToastNotification(
+          title: "Error",
+          body: error.toString(),
+          messageType: ToastificationType.error,
+        );
+        if (botIndex < state.chatMessages.length &&
+            state.chatMessages[botIndex].text.isEmpty) {
+          state.chatMessages[botIndex].text =
+              "Sorry, I couldn't complete that reply.";
+          state.chatMessages.refresh();
+        }
+        state.chatting.value = false;
+      },
+      onDone: () {
+        state.chatting.value = false;
+      },
+      cancelOnError: true,
     );
-    result.fold((error) {
-      showToastNotification(
-        title: "Error",
-        body: error.toString(),
-        messageType: ToastificationType.error,
-      );
-    }, (data) {
-      state.chatMessages.add(
-        ChatMessage(
-          text: data.content,
-          isUser: false,
-        ),
-      );
-    });
-    state.chatting.value = false;
   }
 
   Future<void> getFamily() async {
