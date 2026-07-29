@@ -216,49 +216,66 @@ class _UploadDocumentDialogBodyState extends State<_UploadDocumentDialogBody> {
               ),
             ),
             AppGaps.h12,
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSizes.w12,
-                vertical: AppSizes.h10,
-              ),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                border: Border.all(color: AppColors.black),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Analyze with AI",
-                          style: AppTextStyles.geistNormalBold.copyWith(
-                            color: AppColors.black,
-                          ),
-                        ),
-                        AppGaps.h4,
-                        Text(
-                          "Run Gemini on this file after upload",
-                          style: AppTextStyles.geistSmallLight.copyWith(
-                            color: AppColors.black4,
-                          ),
-                        ),
-                      ],
-                    ),
+            Material(
+              color: AppColors.white,
+              child: InkWell(
+                onTap: _submitting
+                    ? null
+                    : () => setState(() => _analyze = !_analyze),
+                child: Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSizes.w12,
+                    vertical: AppSizes.h12,
                   ),
-                  Switch(
-                    value: _analyze,
-                    activeThumbColor: AppColors.white,
-                    activeTrackColor: AppColors.primary,
-                    inactiveThumbColor: AppColors.white,
-                    inactiveTrackColor: AppColors.white2,
-                    onChanged: _submitting
-                        ? null
-                        : (value) => setState(() => _analyze = value),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    border: Border.all(color: AppColors.black),
                   ),
-                ],
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Analyze with AI",
+                              style: AppTextStyles.geistNormalBold.copyWith(
+                                color: AppColors.black,
+                              ),
+                            ),
+                            AppGaps.h4,
+                            Text(
+                              "Run Gemini on this file after upload",
+                              style: AppTextStyles.geistSmallLight.copyWith(
+                                color: AppColors.black4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Checkbox(
+                        value: _analyze,
+                        activeColor: AppColors.primary,
+                        checkColor: AppColors.white,
+                        side: const BorderSide(
+                          color: AppColors.black,
+                          width: 1.5,
+                        ),
+                        fillColor: WidgetStateProperty.resolveWith((states) {
+                          if (states.contains(WidgetState.selected)) {
+                            return AppColors.primary;
+                          }
+                          return AppColors.white;
+                        }),
+                        onChanged: _submitting
+                            ? null
+                            : (value) =>
+                                setState(() => _analyze = value ?? false),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
             AppGaps.h20,
