@@ -216,25 +216,50 @@ class _UploadDocumentDialogBodyState extends State<_UploadDocumentDialogBody> {
               ),
             ),
             AppGaps.h12,
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                "Analyze with AI",
-                style: AppTextStyles.geistNormalBold.copyWith(
-                  color: AppColors.black,
-                ),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSizes.w12,
+                vertical: AppSizes.h10,
               ),
-              subtitle: Text(
-                "Run Gemini on this file after upload",
-                style: AppTextStyles.geistSmallLight.copyWith(
-                  color: AppColors.black3,
-                ),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                border: Border.all(color: AppColors.black),
               ),
-              activeThumbColor: AppColors.primary,
-              value: _analyze,
-              onChanged: _submitting
-                  ? null
-                  : (value) => setState(() => _analyze = value),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Analyze with AI",
+                          style: AppTextStyles.geistNormalBold.copyWith(
+                            color: AppColors.black,
+                          ),
+                        ),
+                        AppGaps.h4,
+                        Text(
+                          "Run Gemini on this file after upload",
+                          style: AppTextStyles.geistSmallLight.copyWith(
+                            color: AppColors.black4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Switch(
+                    value: _analyze,
+                    activeThumbColor: AppColors.white,
+                    activeTrackColor: AppColors.primary,
+                    inactiveThumbColor: AppColors.white,
+                    inactiveTrackColor: AppColors.white2,
+                    onChanged: _submitting
+                        ? null
+                        : (value) => setState(() => _analyze = value),
+                  ),
+                ],
+              ),
             ),
             AppGaps.h20,
             Row(
