@@ -11,9 +11,9 @@ class OnboardingState extends GetXState {
   RxBool activeYes = false.obs;
   TextEditingController heightController = TextEditingController();
   TextEditingController weightController = TextEditingController();
-  TextEditingController systolicController = TextEditingController();
-  TextEditingController diastolicController = TextEditingController();
-  TextEditingController cholesterolController = TextEditingController();
-  TextEditingController glucoseController = TextEditingController();
+  TextEditingController systolicController = TextEditingController(text: "120");
+  TextEditingController diastolicController = TextEditingController(text: "80");
+  TextEditingController cholesterolController = TextEditingController(text: "190");
+  TextEditingController glucoseController = TextEditingController(text: "95");
   TextEditingController ageController = TextEditingController();
 }
