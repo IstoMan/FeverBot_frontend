@@ -49,7 +49,7 @@ class MetricsContainer extends StatelessWidget {
                 Container(
                   width: 1,
                   height: AppSizes.h48,
-                  color: AppColors.black.withOpacity(0.12),
+                  color: AppColors.black.withValues(alpha: 0.12),
                 ),
                 Expanded(
                   child: _MetricCell(
@@ -62,7 +62,7 @@ class MetricsContainer extends StatelessWidget {
             Divider(
               height: AppSizes.h30,
               thickness: 1,
-              color: AppColors.black.withOpacity(0.12),
+              color: AppColors.black.withValues(alpha: 0.12),
             ),
             Row(
               children: [
@@ -75,7 +75,7 @@ class MetricsContainer extends StatelessWidget {
                 Container(
                   width: 1,
                   height: AppSizes.h48,
-                  color: AppColors.black.withOpacity(0.12),
+                  color: AppColors.black.withValues(alpha: 0.12),
                 ),
                 Expanded(
                   child: _MetricCell(

@@ -128,10 +128,10 @@ class DashboardController extends GetxController {
         messageType: ToastificationType.error,
       );
     }, (data) {
-      _lastQrBytes = QrCodeDialog.decodeQrBytes(data.QRBase64);
-      _lastQrMediaType = data.QRMediaType;
+      _lastQrBytes = QrCodeDialog.decodeQrBytes(data.qrBase64);
+      _lastQrMediaType = data.qrMediaType;
       QrCodeDialog.show(
-        imageBase64: data.QRBase64,
+        imageBase64: data.qrBase64,
         decodedBytes: _lastQrBytes,
         onShare: () => shareQrCode(
           data.inviteUrl,

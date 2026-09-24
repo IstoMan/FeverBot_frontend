@@ -16,6 +16,6 @@ class RDrawerTheme {
     elevation: 2,
     backgroundColor: AppColors.black6,
     surfaceTintColor: AppColors.primary,
-    scrimColor: AppColors.black.withOpacity(0.7),
+    scrimColor: AppColors.black.withValues(alpha: 0.7),
   );
 }

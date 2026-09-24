@@ -1,7 +1,6 @@
 import 'package:manifesto/features/dashboard/presentation/bindings/dashboard_binding.dart';
 import 'package:manifesto/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:manifesto/features/onboarding/presentation/bindings/onboarding_binding.dart';
-import 'package:manifesto/features/onboarding/presentation/pages/habits_page.dart';
 import 'package:manifesto/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:manifesto/features/signup/presentation/bindings/signup_binding.dart';
 import 'package:manifesto/features/signup/presentation/pages/signup_page.dart';
