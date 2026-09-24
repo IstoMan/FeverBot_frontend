@@ -11,7 +11,7 @@ class LocalClient {
       await GetStorage.init();
     } catch (e, stack) {
       Log.error("Error initializing storage: $e\n$stack");
-      return Future.error("Failed to initialize local storage");
+      throw Exception("Failed to initialize local storage");
     }
   }
 
@@ -32,7 +32,7 @@ class LocalClient {
       }
     } catch (e, stack) {
       Log.error("Error saving value for key: $key\n$e\n$stack");
-      return Future.error("Failed to save value for key: $key");
+      throw Exception("Failed to save value for key: $key");
     }
   }
 
@@ -59,7 +59,7 @@ class LocalClient {
       return defaultValue;
     } catch (e, stack) {
       Log.error("Error getting value for key: $key\n$e\n$stack");
-      return Future.error("Failed to get value for key: $key");
+      throw Exception("Failed to get value for key: $key");
     }
   }
 
@@ -69,7 +69,7 @@ class LocalClient {
       await _box.remove(key);
     } catch (e, stack) {
       Log.error("Error removing key: $key\n$e\n$stack");
-      return Future.error("Failed to remove value for key: $key");
+      throw Exception("Failed to remove value for key: $key");
     }
   }
 
@@ -79,7 +79,7 @@ class LocalClient {
       return _box.hasData(key);
     } catch (e, stack) {
       Log.error("Error checking key: $key\n$e\n$stack");
-      return Future.error("Failed to check key: $key");
+      throw Exception("Failed to check key: $key");
     }
   }
 
@@ -89,7 +89,7 @@ class LocalClient {
       await _box.erase();
     } catch (e, stack) {
       Log.error("Error clearing all data\n$e\n$stack");
-      return Future.error("Failed to clear local storage");
+      throw Exception("Failed to clear local storage");
     }
   }
 
@@ -102,7 +102,7 @@ class LocalClient {
       await _box.write(key, jsonEncode(value));
     } catch (e, stack) {
       Log.error("Error saving list for key: $key\n$e\n$stack");
-      return Future.error("Failed to save list for key: $key");
+      throw Exception("Failed to save list for key: $key");
     }
   }
 
@@ -124,7 +124,7 @@ class LocalClient {
       return defaultValue;
     } catch (e, stack) {
       Log.error("Error getting list for key: $key\n$e\n$stack");
-      return Future.error("Failed to get list for key: $key");
+      throw Exception("Failed to get list for key: $key");
     }
   }
 
@@ -137,7 +137,7 @@ class LocalClient {
       await _box.write(key, value);
     } catch (e, stack) {
       Log.error("Error saving bool for key: $key\n$e\n$stack");
-      return Future.error("Failed to save bool for key: $key");
+      throw Exception("Failed to save bool for key: $key");
     }
   }
 
@@ -147,10 +147,11 @@ class LocalClient {
     bool defaultValue = false,
   }) async {
     try {
-      return _box.read(key) ?? defaultValue;
+      final value = _box.read(key) ?? defaultValue;
+      return value;
     } catch (e, stack) {
       Log.error("Error getting bool for key: $key\n$e\n$stack");
-      return Future.error("Failed to get bool for key: $key");
+      throw Exception("Failed to get bool for key: $key");
     }
   }
 
@@ -163,7 +164,7 @@ class LocalClient {
       await _box.write(key, value);
     } catch (e, stack) {
       Log.error("Error saving int for key: $key\n$e\n$stack");
-      return Future.error("Failed to save int for key: $key");
+      throw Exception("Failed to save int for key: $key");
     }
   }
 
@@ -173,10 +174,11 @@ class LocalClient {
     int defaultValue = 0,
   }) async {
     try {
-      return _box.read(key) ?? defaultValue;
+      final value = _box.read(key) ?? defaultValue;
+      return value;
     } catch (e, stack) {
       Log.error("Error getting int for key: $key\n$e\n$stack");
-      return Future.error("Failed to get int for key: $key");
+      throw Exception("Failed to get int for key: $key");
     }
   }
 
@@ -189,7 +191,7 @@ class LocalClient {
       await _box.write(key, value);
     } catch (e, stack) {
       Log.error("Error saving double for key: $key\n$e\n$stack");
-      return Future.error("Failed to save double for key: $key");
+      throw Exception("Failed to save double for key: $key");
     }
   }
 
@@ -199,10 +201,11 @@ class LocalClient {
     double defaultValue = 0.0,
   }) async {
     try {
-      return _box.read(key) ?? defaultValue;
+      final value = _box.read(key) ?? defaultValue;
+      return value;
     } catch (e, stack) {
       Log.error("Error getting double for key: $key\n$e\n$stack");
-      return Future.error("Failed to get double for key: $key");
+      throw Exception("Failed to get double for key: $key");
     }
   }
 
@@ -215,7 +218,7 @@ class LocalClient {
       await _box.write(key, value);
     } catch (e, stack) {
       Log.error("Error saving string for key: $key\n$e\n$stack");
-      return Future.error("Failed to save string for key: $key");
+      throw Exception("Failed to save string for key: $key");
     }
   }
 
@@ -225,10 +228,11 @@ class LocalClient {
     String defaultValue = '',
   }) async {
     try {
-      return _box.read(key) ?? defaultValue;
+      final value = _box.read(key) ?? defaultValue;
+      return value;
     } catch (e, stack) {
       Log.error("Error getting string for key: $key\n$e\n$stack");
-      return Future.error("Failed to get string for key: $key");
+      throw Exception("Failed to get string for key: $key");
     }
   }
 }

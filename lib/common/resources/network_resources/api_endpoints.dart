@@ -12,7 +12,7 @@ abstract class APIEndpoints {
 
   static String newChat = '/chat/new';
 
-  static String sendChat(String id) => '/v1/chats/${id}/messages';
+  static String sendChat(String id) => '/v1/chats/$id/messages';
 
   static String getFamily = "/me/family";
 

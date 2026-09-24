@@ -128,10 +128,10 @@ class DashboardController extends GetxController {
         messageType: ToastificationType.error,
       );
     }, (data) {
-      _lastQrBytes = QrCodeDialog.decodeQrBytes(data.QRBase64);
-      _lastQrMediaType = data.QRMediaType;
+      _lastQrBytes = QrCodeDialog.decodeQrBytes(data.qrBase64);
+      _lastQrMediaType = data.qrMediaType;
       QrCodeDialog.show(
-        imageBase64: data.QRBase64,
+        imageBase64: data.qrBase64,
         decodedBytes: _lastQrBytes,
         onShare: () => shareQrCode(
           data.inviteUrl,
@@ -296,6 +296,15 @@ class DashboardController extends GetxController {
   }
 
   Future<void> scanQR(BarcodeCapture capture) async {
+    if (capture.barcodes.isEmpty) {
+      showToastNotification(
+        title: "Oops",
+        body: "No barcode found, please scan again",
+        messageType: ToastificationType.info,
+      );
+      return;
+    }
+    
     final String? link = capture.barcodes.first.rawValue;
     if (link == null) {
       showToastNotification(
@@ -305,6 +314,16 @@ class DashboardController extends GetxController {
       );
       return;
     }
+    
+    if (link.length < 50) {
+      showToastNotification(
+        title: "Error",
+        body: "Invalid QR code format",
+        messageType: ToastificationType.error,
+      );
+      return;
+    }
+    
     String token = link.substring(50);
     final result = await acceptInviteUseCase.call(
       AcceptInviteUseCaseParams(

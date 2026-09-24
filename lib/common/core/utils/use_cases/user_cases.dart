@@ -1,9 +1,9 @@
 import 'package:manifesto/common/core/utils/type_def/type_def.dart';
 
-abstract class UseCaseWithParams<Type, Params> {
+abstract class UseCaseWithParams<T, Params> {
   const UseCaseWithParams();
 
-  ResultFuture<Type> call(Params params);
+  ResultFuture<T> call(Params params);
 }
 
 abstract class UseCaseWithParamsResultVoid<Params> {
@@ -12,8 +12,8 @@ abstract class UseCaseWithParamsResultVoid<Params> {
   ResultVoid call(Params params);
 }
 
-abstract class UseCaseWithoutParams<Type> {
+abstract class UseCaseWithoutParams<T> {
   const UseCaseWithoutParams();
 
-  ResultFuture<Type> call();
+  ResultFuture<T> call();
 }

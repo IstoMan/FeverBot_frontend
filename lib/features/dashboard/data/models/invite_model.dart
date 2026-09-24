@@ -5,8 +5,8 @@ class InviteModel extends InviteEntity {
     required super.token,
     required super.inviteUrl,
     required super.expiresAt,
-    required super.QRBase64,
-    required super.QRMediaType,
+    required super.qrBase64,
+    required super.qrMediaType,
     required super.targetRole,
   });
 
@@ -15,8 +15,8 @@ class InviteModel extends InviteEntity {
       token: entity.token,
       inviteUrl: entity.inviteUrl,
       expiresAt: entity.expiresAt,
-      QRBase64: entity.QRBase64,
-      QRMediaType: entity.QRMediaType,
+      qrBase64: entity.qrBase64,
+      qrMediaType: entity.qrMediaType,
       targetRole: entity.targetRole,
     );
   }
@@ -26,8 +26,8 @@ class InviteModel extends InviteEntity {
       token: json['token'] as String? ?? '',
       inviteUrl: json['invite_url'] as String? ?? '',
       expiresAt: json['expires_at'] as String? ?? '',
-      QRBase64: json['qr_png_base64'] as String? ?? '',
-      QRMediaType: json['qr_media_type'] as String? ?? '',
+      qrBase64: json['qr_png_base64'] as String? ?? '',
+      qrMediaType: json['qr_media_type'] as String? ?? '',
       targetRole: json['target_role'] as String? ?? '',
     );
   }
@@ -37,8 +37,8 @@ class InviteModel extends InviteEntity {
       'token': token,
       'invite_url': inviteUrl,
       'expires_at': expiresAt,
-      'qr_base64': QRBase64,
-      'qr_media_type': QRMediaType,
+      'qr_base64': qrBase64,
+      'qr_media_type': qrMediaType,
       'target_role': targetRole,
     };
   }
@@ -48,8 +48,8 @@ class InviteModel extends InviteEntity {
       token: token,
       inviteUrl: inviteUrl,
       expiresAt: expiresAt,
-      QRBase64: QRBase64,
-      QRMediaType: QRMediaType,
+      qrBase64: qrBase64,
+      qrMediaType: qrMediaType,
       targetRole: targetRole,
     );
   }
